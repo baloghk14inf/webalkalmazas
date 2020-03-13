@@ -36,18 +36,20 @@ if (isset($argv)) {
 
         
         $row = mysqli_fetch_row($result);
-        $_SESSION['jogkor'] = $row[11];
-        $_SESSION['id'] = $row[0];
+       $_SESSION['jogkor'] = $row[11]; //ez miatt mutatja hogy jogkor = 2 mert az elöbb sikeresen beléptem az adminnal
+       $_SESSION['id'] = $row[0];
         
         
         $valid = password_verify($password, $row[7]); //összehasonlítja a két paramétert
+        
         if ($valid) {
             $message = 'A bejelentkezés sikeres';
 			//$atiranyitas = $result[0]->atiranyitas; //FONTOS erre majd szükség lessz !!!!! //index.php 
         }
-        else {
-            $message = 'A bejelentkezés sikertelen';
-        }
+
+    }
+    else {
+        $message = 'A bejelentkezés sikertelen rossz felhasználónév jelszó páros';
     }
 }
 

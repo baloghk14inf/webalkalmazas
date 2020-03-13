@@ -15,18 +15,20 @@
             <div class="col-md-6 col-sm-6 col-xs-12 " >
             <h1 class="text-center p-4 " >Bejelentkezés</h1> 
                 <form class="form-container" id="form-login" method="post"  role="form"> 
-                <div id="elr">
-                <div class="form-group">
-                    <label for="">Felhasználónév</label>
-                    <input type="text" class="form-control" name="felhasznalonev" id=""  placeholder="Add meg a felhasználóneved">
-                    <label for="" style="display: none" id="uzenet3" ></label>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Jelszó</label>
-                    <input type="password" class="form-control" name="jelszo" id="exampleInputPassword1" placeholder="Add meg a jelszót">
-                </div>
-               <input type="submit"  class="btn btn-info" value="Belépés">
-               </div>
+                    <div id="elr">
+                        <div class="form-group">
+                            <label for="">Felhasználónév</label>
+                            <input type="text" class="form-control" name="felhasznalonev" id=""  placeholder="Add meg a felhasználóneved">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Jelszó</label>
+                            <input type="password" class="form-control" name="jelszo" id="exampleInputPassword1" placeholder="Add meg a jelszót">
+                        </div>
+                            <input type="submit"  class="btn btn-info" value="Belépés">
+                        <div class="form-group">
+                            <label style="display: none" id="uzenet" ></label>
+                        </div>
+                    </div>
                 </form>
             
 

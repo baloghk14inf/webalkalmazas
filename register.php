@@ -5,11 +5,11 @@ require_once 'core/config.php';
 date_default_timezone_set('Europe/Budapest'); //beálítom az időzónát
 header('Content-Type: text/html; charset=utf-8');
 
-/* //FONTOS ezt itt azért kommenteltem ki mert mindig false értéket adott vissza (ha true lett akkor viszont azt maga elé rakta)
+
 $valid = false;
 $message ="";
-*/
-$message ="";
+$message2 ="";
+$message3 ="";
 
 if (isset($_POST['email']) && !empty($_POST['email'])) { //ha az e-mail létezik akkor minden létezik 
 

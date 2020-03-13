@@ -64,49 +64,17 @@ $(document).ready(function()
                     alert("Sikeres");
                     console.log(result.valid);
 
-                    if (result.valid == true) {
+                    if (result.valid == false) {
 
-                        $( "#elr" ).empty();
-                        $( ".uzenet" ).show( "slow" );
-                        
+                        $("#uzenet").html(result.message);
+                        $( "#uzenet" ).show( "slow" );
+                        //$("#form-login").data('bootstrapValidator').resetForm(); 
                     }
-                    else {
-                        $("#uzenet2").html(result.message2);
-                        $( "#uzenet2" ).show( "slow" );
-                        $("#uzenet3").html(result.message3);
-                        $( "#uzenet3" ).show( "slow" );
-                    }
-                    //if (result.valid == true || result.valid == "true") {
-                 /*   if (status == "success") { // ugyan a hosszabb lefutású php nem fejeződik be, de a hívás legalább sikeres
-                        $("#messageText_registration").text("Köszönöm, hogy regisztráltál!");
-                        //$("#messageBox_registration").fadeIn();
-                        
-                        $(".openRegistration").toggle();   // change the open/close registration text
-        
-
-                        
-                        // Reset all inputs
-                        $("#form-registration :input").each(function() {
-                            if (this.type != "submit")  // kivéve a submit
-                                $(this).val('');
-                        });
-                        
-                        $("#form-registration").data('bootstrapValidator').resetForm();
-                        //$("#messageBox_registration").fadeOut();
-                    }	// if
-                    else {
-                        $("#messageText_registration").text(result.message);
-                    }	// if else
-
-                    $("#form-registration").bootstrapValidator('disableSubmitButtons', false);
-                    $("#messageBox_registration").fadeOut(); */
+                   
                 },	// success 
                 error : function(xhr, status){
                     alert("Sikertelen");
-                    $("#messageText_registration").text(status);
 
-                    $("#form-registration").bootstrapValidator('disableSubmitButtons', false);
-                    $("#messageBox_registration").fadeOut();
                 }	// error
             }); // $.ajax	
         }	// if
