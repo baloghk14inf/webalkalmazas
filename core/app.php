@@ -1,16 +1,25 @@
 <?php
- 
+
+ $uri= null;
+
 // az utvonal lekérdezése
-switch ($_SESSION['jogkor']) {
-  case '':
-    $uri = $_SERVER["REQUEST_URI"] ?? '/login'; //ha üres a session változó akkor a login.php töltse majd be
-    break;
-  case 3:
-    $uri = $_SERVER["REQUEST_URI"] ?? '/'; //lehet hogy egy nem létező változóra hivatkozunk// '/'- a home-ot jelenti
-    break;
+if ($_SESSION['jogkor'] == "") {
+  
+  $uri = '/login'; //ha üres a session változó akkor a login.php töltse majd be
+}
+else {
+  
+  $uri = $_SERVER["REQUEST_URI"] ?? '/'; //lehet hogy egy nem létező változóra hivatkozunk// '/'- a home-ot jelenti
+  var_dump($uri);
+}
+if ($_SERVER["REQUEST_URI"]== '/registration') {
+  
+  $uri = '/registration'; //ha üres a session változó akkor a login.php töltse majd be
 }
 
+
 $cleaned = explode("?", $uri) [0];
+
 
 
 //dispatch() fv.meghívása, ami kiválasztja az adott utvonalhoz tartozó controllert
@@ -22,6 +31,10 @@ if (preg_match("%^redirect\:(?<route>.*)$%", $view, $matches)) {//i tt történi
   header('Location:' . $redirectTarget);
   die();
 }
+
+
 extract($data); //visszaadja a $data tartalmát
+
+
 
 

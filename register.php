@@ -1,5 +1,20 @@
 <?php
 
+require_once "core/functions.php";
+require_once "core/controllers.php";
+require_once "core/config.php"; //alap beállítások helye
+
+ date_default_timezone_set('Europe/Budapest'); //beállítjuk az időzónát
+
+ $message="";
+ $message2="";
+ $message3="";
+ $valid = false;
+
+
+ echo registrationUser($connection, $message,$message2,$message3, $valid);
+
+/*
 require_once 'core/config.php';
 
 date_default_timezone_set('Europe/Budapest'); //beálítom az időzónát
@@ -44,8 +59,8 @@ if (isset($_POST['email']) && !empty($_POST['email'])) { //ha az e-mail létezik
 			$jelszo = password_hash($_POST['jelszo'], PASSWORD_BCRYPT, $cost_of_hash);
 
 
-		$insert = mysqli_query($connection,"INSERT INTO felhasznalok (felhasznalonev, nem, szuletesi_datum, email, jelszo,hasznalati_pont,Jogkorok_id,hozzaferes,regisztracio_datuma)
-		VALUES ('{$felhasznalonev}', '{$nem}', '{$szdatum}', '{$email}','{$jelszo}','{$hasznalatipont}','{$jogkor}','{$hozzaf}', NOW())");
+		$insert = mysqli_query($connection,"INSERT INTO felhasznalok (felhasznalonev, nem, szuletesi_datum, email, jelszo,hasznalati_pont,Jogkorok_id,hozzaferes)
+		VALUES ('{$felhasznalonev}', '{$nem}', '{$szdatum}', '{$email}','{$jelszo}','{$hasznalatipont}','{$jogkor}','{$hozzaf}')"); //itt majd javítsd
 		
 		
 		if ($insert) {
@@ -57,7 +72,7 @@ if (isset($_POST['email']) && !empty($_POST['email'])) { //ha az e-mail létezik
 		else {
 			$valid = false;
 			$message = "Probléma adódott a beszúrásnál!";
-		} */
+		} 
 
 
 		
@@ -80,3 +95,4 @@ echo json_encode(
 		'valid' => $valid, 'message' => $message, 'message2' => $message2, 'message3' => $message3
 	)
 );
+*/

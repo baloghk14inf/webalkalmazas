@@ -1,22 +1,36 @@
-.form-container {
-    background-color: lightgrey;
-    border: 1px solid;
-    border-radius:1px 1px 10px 10px;
-    margin-bottom: 10vh;
-    padding: 40px;
-    border-color: black;
-}
 body {
     background-color: white;
 }
-h1 {
-    margin-top: 15vh;
-    border-radius: 10px 10px 0px 0px;
-    margin-bottom: 0;
-    border: 1px solid black;
-    background-color: black;;
-    color: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-
+.log-reg-container {
+    border: 1px solid;
+    border-color:#5bc0de;
+    border-radius:20px;
+    background-color: #f7f7f7;
+    margin-top: 6vh;
+    padding-top: 30px;
+    padding-bottom: 20px;
 }
+.l-r-cim {
+    background-color: #5bc0de;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 25px 0 25px;
+}
+.form-container {
+    margin: 30px 50px 30px 50px;
+}
+.figyelm_uz {
+    color: red;
+}
+@media screen and (max-width: 700px) {
+    .about {
+        margin-top: 0;
+    }
+    .form-container {
+        margin: 25px 40px 25px 40px;
+    }
+    .l-r-cim {
+        margin: 0 20px 0 20px;
+
+    }
+  }

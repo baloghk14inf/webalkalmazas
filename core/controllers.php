@@ -9,7 +9,7 @@
  
 /**
  * notFoundController()
- *
+ * Ha az adott oldal nem található akkor automatikusan erre azoldalra fog irányítani.
  * @return void
  */
 function notFoundController() {
@@ -157,6 +157,9 @@ function singleImageDeleteController($params)
  */
 function loginFormController()
 {
+    
+    $connection = getConnection();
+
     // Volt-e hiba a lépésnél?
     $containsError = array_key_exists('containsError', $_SESSION); //megvizsgáljuk hogy va ne ilyen változo
 
@@ -166,7 +169,7 @@ function loginFormController()
     return [
         'login',
         [
-            'title' => 'Login page',
+            'title' => 'Bejelentkezés',
             'containsError' => $containsError
         ]
     ];
@@ -212,5 +215,15 @@ function logoutSubmitController()
     ];
 
 
+
+}
+function registrationFormController()
+{
+    return[
+        'registration',
+        [
+            'title' => 'Regisztráció'
+        ]
+        ];
 
 }

@@ -1,6 +1,15 @@
 <?php
     session_start();
 
+    date_default_timezone_set('Europe/Budapest');
+
+    $_SESSION['jogkor'] = "";
+    $_SESSION['id'] = "";
+    $message="";
+    $message2="";
+    $message3="";
+    $valid = false;
+
     /*error_reporting(E_ALL); //hibakezelés
     ini_set("display_errosrs", "On");
     ini_set("log_errors", "On");
@@ -11,5 +20,6 @@
     require_once "core/config.php"; //alap beállítások helye
     require_once "core/app.php"; //algoritmusok helye
     require_once "templates/layout.php";
+    
 
 ?>

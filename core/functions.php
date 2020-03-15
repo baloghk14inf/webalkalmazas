@@ -60,6 +60,118 @@ function dispatch($actualRoute, $notFound) {
     return $notFound();
 }
 
+function loginUser($connection, $message, $valid)
+{
+    $query = "SELECT id,jelszo,Jogkorok_id FROM felhasznalok WHERE felhasznalonev = ?";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "s", $_POST['felhasznalonev']); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_assoc($result);
+        if ($record != null && password_verify($_POST['jelszo'], $record['jelszo'])) {
+            //return $record;
+            $_SESSION['id'] = $record['id'];
+            $_SESSION['jogkor'] = $record['Jogkorok_id'];
+            $message = 'A bejelentkezés sikeres';
+            $valid = true;
+            return
+             json_encode(
+                array(
+                    'valid' => $valid,
+                    'message' => $message,
+                    'felhasznalo_id' => $_SESSION['id'],
+                    'jogkor' =>  $_SESSION['jogkor']
+                )
+                );
+
+        }
+        else {
+           // return null;
+           $message = 'A bejelentkezés sikertelen rossz felhasználónév-jelszó páros';
+           $valid = false;
+           $_SESSION['id'] = '';
+           $_SESSION['jogkor'] = '';
+                return
+                 json_encode(
+                    array(
+                        'valid' => $valid,
+                        'message' => $message,
+                        'felhasznalo_id' => $_SESSION['id'],
+                        'jogkor' =>  $_SESSION['jogkor']
+                    )
+                    );
+        }
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
+
+function registrationUser($connection,$message, $message2, $message3, $valid)
+{
+    $query = "SELECT felhasznalonev, email FROM felhasznalok WHERE felhasznalonev = ? OR email = ?";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "ss", $_POST['felhasznalonev'],$_POST['email']); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_all($result, MYSQLI_ASSOC); //FONTOS az egész tömböt beleteszem a rekordba és ez alapján már lehetővé válik mind a 3 esetben a vizsgálat
+
+        if ($record == null) {
+
+            $cost_of_hash = array('cost' => 11);  //11- bcrypt erőssége
+            $jelszo = password_hash($_POST['jelszo'], PASSWORD_BCRYPT, $cost_of_hash);
+
+            $insert = mysqli_query($connection,"INSERT INTO felhasznalok (
+                felhasznalonev,
+                nem,
+                szuletesi_datum,
+                email,
+                jelszo,
+                hasznalati_pont,
+                Jogkorok_id,hozzaferes)
+            VALUES ('{$_POST["felhasznalonev"]}',
+                '{$_POST["nem"]}', 
+                '{$_POST["szdatum"]}', 
+                '{$_POST["email"]}', 
+                '{$jelszo}', 
+                 3, 
+                 3, 
+                'engedélyezett')"); //itt majd javítsd
+
+            if ($insert) {
+                        
+                $valid = true;
+                $message = "A regisztráció sikeresen megtőrtént!";
+            } 
+        }
+        foreach ($record as $row) {
+            if ($row['felhasznalonev'] == $_POST['felhasznalonev']) { //azáltal hogy itt a $_POST tartalmával vetem össze így nem kell mégegyszer lekérdezni
+                $valid = false;
+                $message2 = "Az általad megadott felhasználónév már használatban van!";
+            }
+            if ($row['email'] == $_POST['email']) {
+                $valid = false;
+                $message3 = "Az általad megadott email már használatban van!";
+            }
+        }
+
+        return
+        json_encode(
+            //és itt volt a probléma
+            array(
+                'valid' => $valid, 
+                'message' => $message, 
+                'message2' => $message2, 
+                'message3' => $message3
+            )
+        );
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
+
+
 
 
 
