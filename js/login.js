@@ -70,6 +70,10 @@ $(document).ready(function()
                         $( "#uzenet" ).show( "slow" );
                         //$("#form-login").data('bootstrapValidator').resetForm(); 
                     }
+                    else {
+                        //location.reload();
+                        window.location.replace('/registration'); //ez jó lessz makd igy bejelentkezés után és igy már nem is tud majd visszalépni a login oldalára
+                    }
                    
                 },	// success 
                 error : function(xhr, status){

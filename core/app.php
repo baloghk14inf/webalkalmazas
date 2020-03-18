@@ -1,7 +1,7 @@
 <?php
 
  $uri= null;
-
+//print_r($_SESSION);
 // az utvonal lekérdezése
 if ($_SESSION['jogkor'] == "") {
   
@@ -10,7 +10,7 @@ if ($_SESSION['jogkor'] == "") {
 else {
   
   $uri = $_SERVER["REQUEST_URI"] ?? '/'; //lehet hogy egy nem létező változóra hivatkozunk// '/'- a home-ot jelenti
-  var_dump($uri);
+  //var_dump($uri);
 }
 if ($_SERVER["REQUEST_URI"]== '/registration') {
   

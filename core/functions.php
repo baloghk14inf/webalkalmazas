@@ -74,7 +74,7 @@ function loginUser($connection, $message, $valid)
             $_SESSION['jogkor'] = $record['Jogkorok_id'];
             $message = 'A bejelentkezés sikeres';
             $valid = true;
-            return
+            return 
              json_encode(
                 array(
                     'valid' => $valid,
@@ -128,7 +128,8 @@ function registrationUser($connection,$message, $message2, $message3, $valid)
                 email,
                 jelszo,
                 hasznalati_pont,
-                Jogkorok_id,hozzaferes)
+                Jogkorok_id,
+                hozzaferes)
             VALUES ('{$_POST["felhasznalonev"]}',
                 '{$_POST["nem"]}', 
                 '{$_POST["szdatum"]}', 
@@ -142,7 +143,8 @@ function registrationUser($connection,$message, $message2, $message3, $valid)
                         
                 $valid = true;
                 $message = "A regisztráció sikeresen megtőrtént!";
-            } 
+            }
+
         }
         foreach ($record as $row) {
             if ($row['felhasznalonev'] == $_POST['felhasznalonev']) { //azáltal hogy itt a $_POST tartalmával vetem össze így nem kell mégegyszer lekérdezni
@@ -165,6 +167,21 @@ function registrationUser($connection,$message, $message2, $message3, $valid)
                 'message3' => $message3
             )
         );
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
+function menupontok_feltoltese($connection)
+{
+    //a query-t lehet hogy inkább inner joinnal kéne csinálni
+    $query = "SELECT m.nev mnev, m.route mroute  FROM elerheto_menupontok em,menupontok m WHERE em.Jogkorok_id = ? AND em.Menupontok_id = m.id ";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "i", $_SESSION['jogkor']); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        return $record;
     } else {
         logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
         errorPage();

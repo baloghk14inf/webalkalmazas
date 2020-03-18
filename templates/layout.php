@@ -14,12 +14,14 @@
     /*$query = "SELECT  m.nev mnev, m.route mroute FROM elerheto_menupontok e_m, menupontok m  WHERE e_m ='$jogkor'";
     $result = mysqli_query($connection, $query); */ //ez majd menü kilisttázáasakor esetleg megfelelő lehet
 
+    //var_dump($_SESSION);
     if ($_SESSION['jogkor'] != "") {
 
         require_once "header.php"; //itt az átirányításnál majd még gondold át
 
     }
         require_once "$view.php"; //az app.php-ben fog majd eldölni hogy mégis melyik .php nézet fog majd betöltődni
+        
     ?>
 
 

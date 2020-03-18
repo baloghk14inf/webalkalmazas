@@ -1,4 +1,7 @@
 <?php
+session_start(); //fontos itt azért kellett indítani eggy sessiont mert ez tljesen elkülönl az indx.php-tól
+                //
+
 require_once "core/functions.php";
 require_once "core/controllers.php";
 require_once "core/config.php"; //alap beállítások helye

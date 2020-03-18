@@ -3,8 +3,12 @@
 
     date_default_timezone_set('Europe/Budapest');
 
-    $_SESSION['jogkor'] = "";
-    $_SESSION['id'] = "";
+    if ($_SESSION == null) {        //ez a feltétel a kezdeti bejelentkezéshez valamint a kijelentkezés után szükséges
+        $_SESSION['jogkor'] = "";   //ha nem lenne akkor a session változók folyton üresek lennének az az nem tudnánk neki átani semmit
+        $_SESSION['id'] = "";
+    }
+    //session_destroy();            //ezt pedig teszteléshez használtam hogy a $_SESSION szuperg tömböt teljesen kiürítsem
+
     $message="";
     $message2="";
     $message3="";
