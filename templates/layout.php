@@ -29,6 +29,7 @@
 <?php require_once "templates/min.js.html"; ?>
 <script src='js/login.js'></script>
 <script src='js/registration.js'></script>
+<script src='js/feltoltesek.js'></script>
     
 </body>
 </html>

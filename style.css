@@ -31,6 +31,22 @@ body {
     background-color: #5bc0de;
     color: white;
   }
+.navbar-form {
+    margin-right: 70px;
+}
+.ker-felt-container {
+    border: 1px solid;
+    border-color:#5bc0de;
+    border-radius:20px;
+    background-color: #f7f7f7;
+    margin-top: 8vh;
+    padding-top: 30px;
+    padding-bottom: 20px;
+}
+.feltolteseim-frm {
+    padding-left: 2px;
+    padding-right: 2px;
+}
 @media screen and (max-width: 700px) {
     .log-reg-container {
         margin-top: 0;
@@ -42,4 +58,12 @@ body {
         margin: 0 20px 0 20px;
 
     }
+  }
+  @media screen and (max-width: 1120px) {
+    .navbar-form {
+        margin-right: 0;
+    }
+  }
+  @media screen and (max-width: 1050px) {
+
   }

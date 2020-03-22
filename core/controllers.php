@@ -227,3 +227,13 @@ function registrationFormController()
         ];
 
 }
+function feltolteseimController()
+{
+    return[
+        'feltolteseim',
+        [
+            'title' => 'Feltöltéseim'
+        ]
+        ];
+
+}

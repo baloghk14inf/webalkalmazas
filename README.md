@@ -1,1 +1,1 @@
-# webalkalmaz-s
+# webalkalmazas

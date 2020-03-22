@@ -188,6 +188,120 @@ function menupontok_feltoltese($connection)
     }
 }
 
+function select_elemek_lekerdezese($connection, $query) {
+    
+    if ($result = mysqli_query($connection, $query)) {
+
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+         
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }  
+}
+
+function file_feltoltes($connection,$message, $valid)
+{
+    $filenev = $_FILES['file']['name'];
+    $file_hash = md5_file($_FILES['file']['tmp_name']);
+    $datum = date("Y M");
+    $gyoker_mappa = "dokumentumok/";
+    $mappa = $gyoker_mappa . $datum;
+    $helymegh = $mappa."/".$filenev;
+    $FileTipus = pathinfo($helymegh,PATHINFO_EXTENSION); //file nevéről a  kiterjesztés kigyüjtése változóba
+    $ervenyes_kiterjesztes = "pdf"; //álltalunk elfogadott file- kiterjesztés
+
+    if (strtolower($FileTipus) != $ervenyes_kiterjesztes){ //a file kiterjesztése az elfogadott listájában megtalálható
+        
+        $valid = false;
+        $message = "A kiválasztott dokumentum nem .pdf kiterjesztésü!";
+
+        return
+        json_encode(
+            //és itt volt a probléma
+            array(
+                'valid' => $valid, 
+                'message' => $message
+            )
+        );
+    }
+
+    $query = "SELECT file_hash FROM dokumentumok WHERE file_hash = ? ";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "s",$file_hash); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_assoc($result);
+
+        if ($record == null) {
+
+            
+            if (!file_exists($mappa)) {
+                mkdir($mappa, 0777, true);
+            }
+
+            if (!file_exists($helymegh)) {
+            
+                
+                if (move_uploaded_file($_FILES['file']['tmp_name'],$helymegh)) { // a paraméterben tárolt file-t a $location-ben található
+
+                    
+                    $insert = mysqli_query($connection,"INSERT INTO dokumentumok (
+                        Felhasznalok_id,
+                        Kategoriak_id,
+                        Targyak_id,
+                        dokumentum_cime,
+                        oldalszam,
+                        dokumentum_eve,
+                        forras,
+                        dokumentum,
+                        Statuszok_id,
+                        file_hash)
+                    VALUES (
+                        '{$_SESSION["id"]}',
+                        '{$_POST["kategoria"]}', 
+                        '{$_POST["targy"]}', 
+                        '{$_POST["dcim"]}',
+                        '{$_POST["oldalszam"]}',
+                        '{$_POST["dokumentum_eve"]}',
+                        '{$_POST["forras"]}',
+                        '{$helymegh}',
+                            1,
+                        '{$file_hash}')");
+
+                    if ($insert) {
+                        $valid = true;
+                        $message = "A feltöltés sikeresen megtörtént";
+                    }
+
+            
+                }
+            }
+            else {
+                $valid = false;
+                $message = "Nevezd át a fetöltendő dokumentumot és utána probáld meg újra!";
+            }
+        }
+        else {
+            $valid = false;
+            $message = "A feltöltendő dokumentumot már létezik!";
+        }
+
+
+        return
+        json_encode(
+            array(
+                'valid' => $valid, 
+                'message' => $message
+            )
+        );
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
+
+
 
 
 

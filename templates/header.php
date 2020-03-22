@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -21,9 +21,9 @@
       <ul class="nav navbar-nav ">
           <?php
           $record = menupontok_feltoltese($connection);
-          
+          //dinamikusan töltöm fel a menüpontokat és aztán az url-lekértezésével szemléltetem hogy épp melyik menüpont az aktív
           foreach ($record as $row):?>
-                <li class="active"><a href="<?=$row['mroute']?>"><?=$row['mnev']?></a></li>
+                <li class="<?=($_SERVER["REQUEST_URI"] == $row['mroute']) ? 'active' : '' ?>"><a href="<?=$row['mroute']?>"><?=$row['mnev']?></a></li>
           <?php endforeach; ?>
       </ul>
 
