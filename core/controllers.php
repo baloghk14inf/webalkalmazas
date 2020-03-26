@@ -229,11 +229,71 @@ function registrationFormController()
 }
 function feltolteseimController()
 {
+
+        /**
+     * Query string változók: $_GET[]
+     * PHP 7 új operátora: null coalescing operator
+     * A ternary operátor (felt ? true : false) és az isset() fv. együttes használatát helyettesíti.
+     * A null coalescing operator az első (bal oldali) operandusát adja vissza, ha az létezik és nem null, különben a másodikat (jobb oldalit)
+     * Az isset() fv. igazat ad vissza, ha a paraméterül adott változó létezik és nem null (gyakran használatos a $_GET-ben levő változók ellenőrzésére).
+     * Tehát az
+     *   isset($_GET["size"]) ? $pageSize = $_GET["size"] : $pageSize = 10;
+     * helyettesíthető ezzel:
+     *   $pageSize = $_GET["size"] ??  10;
+     * ami lényegesen tömörebb...
+     */
+    $size = 5;    // $size: lapozási oldalméret
+    $page = filter_input(INPUT_GET, 'page') ?? 1;     // $page: oldalszám
+    $listazando = filter_input(INPUT_GET, 'listazando') ?? "feltoltott";
+    $query_total = "";
+    $query_content = "";
+
+    if ($listazando == "feltoltott") {
+        $query_total = "SELECT count(*) AS count FROM dokumentumok" ; //FONTOS it csak az ellenorzot dokumentumok legyenek
+        $query_content = "SELECT * FROM dokumentumok LIMIT ?, ?"; // itt is az ellenorzott
+    }
+    if ($listazando == "ellenorzendo") {
+        $query_total = "SELECT count(*) AS count FROM dokumentumok" ; //FONTOS itt pedig csak az ellenörzetlen
+        $query_content = "SELECT * FROM dokumentumok LIMIT ?, ?"; // itt itt pedig az ellenorzetlen
+    }
+ 
+    // $connection: Adatbázis kapcsolat
+   /* global $config;
+    $connection = getConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']); */
+ 
+    $connection = getConnection();
+    // $total: a képek számának meghatározása
+    $total = getTotal($connection, $query_total);
+ 
+    // $offset: eltolás kiszámítása
+    $offset = ($page - 1) * $size;
+ 
+    // $content: egy oldalnyi kép
+    $content = getDocumentPaginated($connection, $size, $offset, $query_content);
+
+    $lastPage = $total % $size == 0 ? intdiv($total, $size) : intdiv($total, $size) + 1;
+    //----------------------------------------------------------------------------------------
+ 
+    return [
+        'feltolteseim', //ezt majd nevezd át
+        [
+            'title' => 'Feltöltéseim',
+            'content' => $content,
+            'total' => $total,
+            'size' => $size,
+            'page' => $page,
+            'lastPage' => $lastPage,
+            'listazando' => $listazando
+        ]
+    ];
+    /*
     return[
         'feltolteseim',
         [
             'title' => 'Feltöltéseim'
         ]
         ];
+
+        */
 
 }

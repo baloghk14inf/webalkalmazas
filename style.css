@@ -47,6 +47,9 @@ body {
     padding-left: 2px;
     padding-right: 2px;
 }
+li.nav-elem-eltuntet {
+    display: none;
+}
 @media screen and (max-width: 700px) {
     .log-reg-container {
         margin-top: 0;
@@ -57,6 +60,9 @@ body {
     .l-r-cim {
         margin: 0 20px 0 20px;
 
+    }
+    #kis-meret {
+        display: none;
     }
   }
   @media screen and (max-width: 1120px) {

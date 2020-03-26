@@ -202,8 +202,11 @@ function select_elemek_lekerdezese($connection, $query) {
 
 function file_feltoltes($connection,$message, $valid)
 {
+    $oldalsz = (empty($_POST["oldalszam"]) ? "NULL" : $_POST['oldalszam']);
+    $dokumentum_eve = (empty($_POST["dokumentum_eve"]) ? "NULL" : $_POST['dokumentum_eve']);
     $filenev = $_FILES['file']['name'];
-    $file_hash = md5_file($_FILES['file']['tmp_name']);
+    $dokumentum = $_FILES['file']['tmp_name'];
+    $file_hash = md5_file($dokumentum);
     $datum = date("Y M");
     $gyoker_mappa = "dokumentumok/";
     $mappa = $gyoker_mappa . $datum;
@@ -242,9 +245,6 @@ function file_feltoltes($connection,$message, $valid)
 
             if (!file_exists($helymegh)) {
             
-                
-                if (move_uploaded_file($_FILES['file']['tmp_name'],$helymegh)) { // a paraméterben tárolt file-t a $location-ben található
-
                     
                     $insert = mysqli_query($connection,"INSERT INTO dokumentumok (
                         Felhasznalok_id,
@@ -261,21 +261,21 @@ function file_feltoltes($connection,$message, $valid)
                         '{$_SESSION["id"]}',
                         '{$_POST["kategoria"]}', 
                         '{$_POST["targy"]}', 
-                        '{$_POST["dcim"]}',
-                        '{$_POST["oldalszam"]}',
-                        '{$_POST["dokumentum_eve"]}',
+                        '{$_POST["dcim"]}',".
+                         $oldalsz.",".      //itt hozzáfűztem , mert ha csak simán paraméterként adom át és üres a változó akkor nem lessz sikeres a beillesztés
+                         $dokumentum_eve . ",
                         '{$_POST["forras"]}',
                         '{$helymegh}',
                             1,
                         '{$file_hash}')");
 
                     if ($insert) {
+                        move_uploaded_file($_FILES['file']['tmp_name'],$helymegh); // a paraméterben tárolt file-t a $location-ben található
                         $valid = true;
                         $message = "A feltöltés sikeresen megtörtént";
                     }
 
             
-                }
             }
             else {
                 $valid = false;
@@ -301,6 +301,78 @@ function file_feltoltes($connection,$message, $valid)
     }
 }
 
+
+/**
+ * getTotal() a képek számának meghatározása
+ *
+ * @param [type] $connection MySQL kapcsolat
+ * @return [int] A képek száma
+ */
+function getTotal($connection, $query) {
+
+    if ($result = mysqli_query($connection, $query)) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['count'];
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }  
+}
+
+/**
+ * Egy oldalnyi képet ad vissza az adatbázisból, a lapméret és az eltolás alapján.
+ *
+ * @param [type] $connection MySQL kapcsolat
+ * @param [int] $size Lapméret
+ * @param [int] $offset Eltolás
+ * @return void MYSQLI_ASSOC
+ */
+function getDocumentPaginated($connection, $size, $offset, $query) {
+    
+    if ($statment = mysqli_prepare($connection, $query)) { //előkészítés
+        mysqli_stmt_bind_param($statment, "ii", $offset, $size); // itt kerül behelyettesítésre a kérdőjelek helyére a változó ii- integer and integer
+        mysqli_stmt_execute($statment); //végrehajtás
+        $result = mysqli_stmt_get_result($statment); //eredménymegszerzés
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }  
+}
+
+
+
+/*
+function lepteto() {
+
+    $size = 2;    // $size: lapozási oldalméret(ennyi dokumentum fog majd megjellenni)
+    $page = filter_input(INPUT_GET, 'page') ?? 1;     // $page: oldalszám (itt ha nem kap majd get-tel éertéket akkor alapértelmezetten 1)
+ 
+ 
+    $connection = getConnection();
+    // $total: a dokumentumok számát határozza meg
+    $total = getTotal($connection);
+ 
+    // $offset: eltolás kiszámítása
+    $offset = ($page - 1) * $size;
+ 
+    // $content: egy oldalnyi kép
+    $content = getDocumentPaginated($connection, $size, $offset);
+
+    $lastPage = $total % $size == 0 ? intdiv($total, $size) : intdiv($total, $size) + 1;
+    //----------------------------------------------------------------------------------------
+ 
+    return array(
+            'content' => $content,
+            'total' => $total,
+            'size' => $size,
+            'page' => $page,
+            'lastPage' => $lastPage
+    );
+    
+}
+
+*/
 
 
 

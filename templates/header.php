@@ -22,8 +22,8 @@
           <?php
           $record = menupontok_feltoltese($connection);
           //dinamikusan töltöm fel a menüpontokat és aztán az url-lekértezésével szemléltetem hogy épp melyik menüpont az aktív
-          foreach ($record as $row):?>
-                <li class="<?=($_SERVER["REQUEST_URI"] == $row['mroute']) ? 'active' : '' ?>"><a href="<?=$row['mroute']?>"><?=$row['mnev']?></a></li>
+          foreach ($record as $row): //strtok()-al levágjuk a query stringet az url-ről?>
+                <li class="<?=(strtok($_SERVER["REQUEST_URI"], '?') == $row['mroute']) ? 'active' : '' ?>"><a href="<?=$row['mroute']?>"><?=$row['mnev']?></a></li>
           <?php endforeach; ?>
       </ul>
 

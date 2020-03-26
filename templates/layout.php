@@ -6,6 +6,7 @@
     <title><?=$siteName?> | <?=$title?></title>
     <?php require_once "min.css.html"; ?>
     <link rel="stylesheet" href="style.css">
+    <script src='js/feltoltesek.js'></script>
 
 </head>
 <body>
@@ -29,7 +30,7 @@
 <?php require_once "templates/min.js.html"; ?>
 <script src='js/login.js'></script>
 <script src='js/registration.js'></script>
-<script src='js/feltoltesek.js'></script>
+
     
 </body>
 </html>

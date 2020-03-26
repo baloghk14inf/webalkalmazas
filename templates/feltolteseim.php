@@ -1,8 +1,9 @@
+<script> proba();</script>
 <div class="container-fluid">
     <div class="row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-8 ker-felt-container">
-    <div class="col-sm-6 p-4 m-4 mt-5">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10 ker-felt-container">
+    <div class="col-sm-4 p-4 m-4 mt-5">
     <h4 class="text-center l-r-cim" >Dokumentum feltöltése</h4>
         <form class="form-container" id="form-feltolteseim" method="post"  role="form"> 
                 <div id="elr">
@@ -63,17 +64,29 @@
                 </div>
                </div>
             </form>
-
-            <div class="form-group  col-lg-12">
-                <h4 class="text-center l-r-cim" >Ellenőrzésre várakozó feltöltések</h4>
-            </div>
     </div>
-    <div class="col-sm-6 p-4 m-4 mt-5 ">
-        <h4 class="text-center l-r-cim" >Feltöltéseim</h4>
+    <div class="col-sm-8 p-4 m-4 mt-5 ">
+        <h4 class="text-center l-r-cim" >Feltöltéseim - Ellenőrzésre várakozó feltöltések</h4>
+        
+        <form class="form-container" method="get" action=''  role="form" id='lista'> 
+                <div class="form-group col-sm-12 col-lg-3 ">
+                    <select class="form-control input-sm" name="listazando" id="listazando">
+                    <option value="feltoltott" <?=$listazando == 'feltoltott'? 'selected' : '' ?>>Feltöltéseim</option>
+                    <option value="ellenorzendo"<?=$listazando == 'ellenorzendo'? 'selected' : '' ?>>Ellenőrzésre várakozó</option>
+                    </select>
+                </div>
+
+        </form>
+    
+    <?php
+
+    require_once "paginate.php";
+    
+    ?>
         
 
     </div>
     </div>
-    <div class="col-sm-2"></div>
+    <div class="col-sm-1"></div>
     </div>
 </div>

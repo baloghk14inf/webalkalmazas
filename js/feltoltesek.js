@@ -1,4 +1,8 @@
 
+function proba(){ //az aktuális dátum évének kiszámolása hogy ne lehessen nygobb értéket megadni
+    var pathArray = window.location.href.split('#');
+    alert(pathArray[1]);
+}
 function aktualis_ev(){ //az aktuális dátum évének kiszámolása hogy ne lehessen nygobb értéket megadni
     var today = new Date();
     var yyyy = today.getFullYear(); 
@@ -8,9 +12,21 @@ function aktualis_ev(){ //az aktuális dátum évének kiszámolása hogy ne leh
 
 $(document).ready(function () {
 
+    
+    $('#listazando').on('change', function() {
+        $('#lista').submit();
+      });
+      
+
     $(":file").filestyle({buttonBefore: true});
     
     $(":file").filestyle('buttonText', 'Kiválaszt');
+
+
+    $("li.disabled a").click(function() { //ezzel megakadályozom azt hogy ha disabled a nav ellem akkor se lehessen rányomni
+        return false;
+      });
+
 
     $('#form-feltolteseim').bootstrapValidator({
 
