@@ -24,10 +24,13 @@
 
     $routes = [];
     // utvonalak felvétele a $routes tömbbe
-    $routes['GET']['/'] = 'homeController';
+    //$routes['GET']['/'] = 'homeController'; //ez miatt hibába ötközött a betöltés mert alapértelmezetten a localhost = /
     $routes['GET']['/login'] = 'loginFormController'; //Itt ez még csak az hogy irányítson a login formra
     $routes['GET']['/registration'] = 'registrationFormController'; //Ez a login formra fog irányítani
     $routes['GET']['/feltolteseim'] = 'feltolteseimController'; //Ez a login formra fog irányítani
+    $routes['GET']['/kereseim'] = 'kereseimController'; //Ez a login formra fog irányítani
+
+    $routes['GET']['/logout'] = 'logoutController';
     
     //$routes['GET']['/login'] = 'loginFormController'; //ez pedig az hogy ha csak simán a bejelentkezés formra szeretnénk menni
     //$routes['POST']['/login'] = 'loginSubmitController'; // ez figja majd meghatározni a miros figyelmeztetést (tehát ha hiba lenne)

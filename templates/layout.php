@@ -6,7 +6,6 @@
     <title><?=$siteName?> | <?=$title?></title>
     <?php require_once "min.css.html"; ?>
     <link rel="stylesheet" href="style.css">
-    <script src='js/feltoltesek.js'></script>
 
 </head>
 <body>
@@ -27,10 +26,18 @@
 
 
 
-<?php require_once "templates/min.js.html"; ?>
-<script src='js/login.js'></script>
-<script src='js/registration.js'></script>
+<?php require_once "templates/min.js.html";?>
 
+<?php if ($_SERVER["REQUEST_URI"] == "/login" | $_SERVER["REQUEST_URI"] == "/"):?>
+<script src='js/login.js'></script>
+<?php endif; ?>
+<?php if ($_SERVER["REQUEST_URI"] == "/registration"):?>
+<script src='js/registration.js'></script>
+<?php endif; ?>
+<?php if ($_SERVER["REQUEST_URI"] == "/feltolteseim"):?>
+<script src='js/pagination.js'></script> <!--A body elé kell beszúrni a pagination kezdeti értékének meghatározása miatt-->
+<script src='js/feltoltesek.js'></script>
+<?php endif; ?>
     
 </body>
 </html>

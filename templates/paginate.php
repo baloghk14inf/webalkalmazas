@@ -2,16 +2,16 @@
 <div class="col-sm-12 col-lg-12 ">
 <div class="col-sm-12 col-lg-4 "></div>
 <nav>
-    <ul class="pagination pagination-sm ">
-        <li class="<?=$page<=1?"disabled":""?>"><a   href="?listazando=<?=$listazando?>&page=<?=$page - 1?>">Previous</a></li>
-        <li class="<?=$page<=1?"nav-elem-eltuntet":""?>"><a href="?listazando=<?=$listazando?>&page=1">1</a></li>
-        <li id="kis-meret" class="<?=$page<=2?"nav-elem-eltuntet":""?>"><a href="#">...</a></li>
+    <ul class="pagination pagination-sm " >
+        <li id="nav1" ><a id="a1" >Előző</a></li>
+        <li id="nav2" ><a id="a2" >1</a></li>
+        <li id="nav3" id="kis-meret" ><a href="#">...</a></li>
 
-        <li class="page-item active"><a class="page-link" href="#"><?=$page?></a></li>
+        <li class="page-item active"><a id="a3" class="page-link" href="#"></a></li>
 
-        <li id="kis-meret" class="<?=$page>=$lastPage-1?"nav-elem-eltuntet":""?>"><a href="#">...</a></li>
-        <li class="<?=$page>=$lastPage?"nav-elem-eltuntet":""?>"><a href="?listazando=<?=$listazando?>&page=<?=$lastPage?>"><?=$lastPage?></a></li>
-        <li class="<?=$page>=$lastPage?"disabled":""?>"><a  href="?listazando=<?=$listazando?>&page=<?=$page + 1?>">Next</a></li>
+        <li id="nav4" id="kis-meret" ><a href="#">...</a></li>
+        <li id="nav5" ><a id="a4" ></a></li>
+        <li id="nav6" ><a id="a5" >Következő</a></li>
     </ul>
 </nav>
 </div>

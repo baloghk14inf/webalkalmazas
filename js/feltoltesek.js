@@ -12,20 +12,17 @@ function aktualis_ev(){ //az aktuális dátum évének kiszámolása hogy ne leh
 
 $(document).ready(function () {
 
-    
-    $('#listazando').on('change', function() {
-        $('#lista').submit();
-      });
-      
 
+    pagination("feltoltott", ""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
+
+    $("li.disabled a").on(function() { //ezzel megakadályozom azt hogy ha disabled a nav ellem akkor se lehessen rányomni
+        return false;
+      });
+    
+      
     $(":file").filestyle({buttonBefore: true});
     
     $(":file").filestyle('buttonText', 'Kiválaszt');
-
-
-    $("li.disabled a").click(function() { //ezzel megakadályozom azt hogy ha disabled a nav ellem akkor se lehessen rányomni
-        return false;
-      });
 
 
     $('#form-feltolteseim').bootstrapValidator({
@@ -50,7 +47,7 @@ $(document).ready(function () {
                         message: 'A dokumentum címét kötelező megadni!'
                     }
                 }
-            },//email_end
+            },
             forras: {
                 validators: {
                     notEmpty: {
@@ -115,24 +112,34 @@ $(document).ready(function () {
                 url     : 'feltolt.php', //Target URL for JSON file
                 type    : 'POST',
                 data    : fd,
+                async: false,           //Ezzel itt kikapcsoltam azt hogy 2 üzenet térjen vissza
                 contentType: false,
                 processData: false,
                // dataType: 'json',
                 success : function(result, status, xhr){
                     alert("Sikeres");
-                    console.log(result.valid);
+     
+                    var valasz = JSON.parse(result);
 
-                    if (result.valid == true) {
+                    if (valasz.valid == true) {
+                        
+                        $("#form-feltolteseim :input").each(function() {
+                            
+                            if (this.type != "submit") {
+                                $(this).val('');
+                            }
+                        });
 
-                        $( "#elr" ).empty();
-                        $( ".uzenet" ).show( "slow" );
+                        $("#form-feltolteseim").data('bootstrapValidator').resetForm();
+
+                        $('#alert').html("<div class='alert alert-success' role='alert'>"+ valasz.message +"</div>");
+                        $('#alert').show();
                         
                     }
                     else {
-                        $("#uzenet2").html(result.message2);
-                        $( "#uzenet2" ).show( "slow" );
-                        $("#uzenet3").html(result.message3);
-                        $( "#uzenet3" ).show( "slow" );
+                        
+                        $('#alert').html("<div class='alert alert-danger' role='alert'>"+ valasz.message +"</div>");
+                        $('#alert').show();
                     }
 
                 },	// success 
@@ -147,4 +154,21 @@ $(document).ready(function () {
         }	// if
     
     });  // submit
+
+    $(document).on( 'click', '.leptet', function(){
+
+        var feldarabolt_href = this.href.split('#');
+        var oldalsz = parseInt(feldarabolt_href[2]);
+        var listazando = feldarabolt_href[1].replace('&', '');
+
+        pagination(listazando, oldalsz);
+        
+    } );
+
+    $('#listazando').on('change', function() {
+        var listazando = $('#listazando').val();
+        pagination(listazando, "");
+        
+      });
+    
 });

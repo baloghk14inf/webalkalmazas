@@ -8,6 +8,7 @@ if ($_SESSION['jogkor'] == "") {
   $uri = '/login'; //ha üres a session változó akkor a login.php töltse majd be
 }
 else {
+    //FONTOS  AZÉRT MUTAT A 404-RE mert még nincs / kezdőlap oldal
   
   $uri = $_SERVER["REQUEST_URI"] ?? '/'; //lehet hogy egy nem létező változóra hivatkozunk// '/'- a home-ot jelenti
   //var_dump($uri);

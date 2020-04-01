@@ -8,6 +8,7 @@ require_once "core/config.php"; //alap beállítások helye
 
  $message="";
  $valid = false;
+ $connection = getConnection();
 
  echo file_feltoltes($connection, $message,$valid);
 
