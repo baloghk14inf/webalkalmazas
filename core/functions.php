@@ -64,46 +64,40 @@ function dispatch($actualRoute, $notFound) {
 function loginUser($connection, $message, $valid)
 {
     // a jelszót az összehasonlítás miatt kérdezem le
-    $query = "SELECT id,felhasznalonev,jelszo,Jogkorok_id FROM felhasznalok WHERE felhasznalonev = ?";
+    $query = "SELECT id,felhasznalonev,jelszo,Jogkorok_id,hozzaferes FROM felhasznalok WHERE felhasznalonev = ?";
     if ($statment = mysqli_prepare($connection, $query)) {
         mysqli_stmt_bind_param($statment, "s", $_POST['felhasznalonev']); //bind-hozzákötés"s"-string
         mysqli_stmt_execute($statment);
         $result = mysqli_stmt_get_result($statment);
         $record = mysqli_fetch_assoc($result);
-        if ($record != null && password_verify($_POST['jelszo'], $record['jelszo'])) {
+
+        if ($record != null && password_verify($_POST['jelszo'], $record['jelszo']) && $record['hozzaferes']=="engedélyezett") {
             //return $record;
             $_SESSION['id'] = $record['id'];
             $_SESSION['jogkor'] = $record['Jogkorok_id'];
             $_SESSION['felhasznalonev'] = $record['felhasznalonev'];
             $message = 'A bejelentkezés sikeres';
             $valid = true;
-            return 
-             json_encode(
-                array(
-                    'valid' => $valid,
-                    'message' => $message,
-                    'felhasznalo_id' => $_SESSION['id'],
-                    'jogkor' =>  $_SESSION['jogkor']
-                )
-                );
-
         }
-        else {
-           // return null;
+        else if($record == null || password_verify($_POST['jelszo'], $record['jelszo']) != true) {
+           
            $message = 'A bejelentkezés sikertelen rossz felhasználónév-jelszó páros';
            $valid = false;
-           $_SESSION['id'] = '';
-           $_SESSION['jogkor'] = '';
-                return
-                 json_encode(
-                    array(
-                        'valid' => $valid,
-                        'message' => $message,
-                        'felhasznalo_id' => $_SESSION['id'],
-                        'jogkor' =>  $_SESSION['jogkor']
-                    )
-                    );
         }
+        else if ($record['hozzaferes']!="engedélyezett") {
+
+            $valid = false;
+            $message = 'Hozzáférés megtagadva.'; 
+        }
+        return 
+        json_encode(
+           array(
+               'valid' => $valid,
+               'message' => $message,
+               'felhasznalo_id' => $_SESSION['id'],
+               'jogkor' =>  $_SESSION['jogkor']
+           )
+           );
     } else {
         logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
         errorPage();
@@ -330,7 +324,7 @@ function getTotal($connection, $query) {
  * @param [int] $offset Eltolás
  * @return void MYSQLI_ASSOC
  */
-function getDocumentPaginated($connection, $size, $offset, $query) {
+function getContentPaginated($connection, $size, $offset, $query) {
     
     if ($statment = mysqli_prepare($connection, $query)) { //előkészítés
         mysqli_stmt_bind_param($statment, "ii", $offset, $size); // itt kerül behelyettesítésre a kérdőjelek helyére a változó ii- integer and integer
@@ -360,7 +354,7 @@ function lepteto($listazando, $oldal, $query_total, $query_content) {
      *   $pageSize = $_GET["size"] ??  10;
      * ami lényegesen tömörebb...
      */
-    $size = 4;    // $size: lapozási oldalméret
+    $size = 6;    // $size: lapozási oldalméret
     $page = !empty($oldal)? (int)$oldal : 1;     // $page: oldalszám
     $listazando = $listazando;
     $query_total = $query_total;
@@ -376,7 +370,7 @@ function lepteto($listazando, $oldal, $query_total, $query_content) {
     $offset = ($page - 1) * $size;
  
     // $content: egy oldalnyi kép
-    $content = getDocumentPaginated($connection, $size, $offset, $query_content);
+    $content = getContentPaginated($connection, $size, $offset, $query_content);
 
     $lastPage = $total % $size == 0 ? intdiv($total, $size) : intdiv($total, $size) + 1;
 
@@ -391,6 +385,63 @@ function lepteto($listazando, $oldal, $query_total, $query_content) {
     
 }
 
+function uj_keres($connection, $message, $valid)
+{
+    $ev = (empty($_POST["dokumentum_eve"]) ? "NULL" : $_POST['dokumentum_eve']);
+    $query = "SELECT hasznalati_pont FROM felhasznalok WHERE id = ?";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "i", $_SESSION['id']); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_assoc($result);
+        if ($record != null && $record['hasznalati_pont'] >= 1) {
+
+            $insert = mysqli_query($connection,"INSERT INTO keresek (
+                Felhasznalok_id,
+                keres_megnevezese,
+                ev,
+                Kategoriak_id,
+                Targyak_id,
+                Statuszok_id)
+            VALUES (
+                '{$_SESSION["id"]}',
+                '{$_POST["szovegdoboz"]}',".
+                 $ev .", 
+                '{$_POST["kategoria"]}', 
+                '{$_POST["targy"]}', 
+                   2 )");  // 2-teljesítésre várakozó
+
+            if ($insert) {
+
+                $uj_egyenleg = $record['hasznalati_pont']-1; //fent már kialakítottam hogy ne legyen nullánál kissebb a szám(egyenleg)
+                $update = mysqli_query($connection, "UPDATE felhasznalok SET hasznalati_pont='{$uj_egyenleg}' WHERE id='{$_SESSION["id"]}'");
+
+                $valid = true;
+                $message = "A dokumentum kérés sikeresen megörtént.";
+            
+            }
+
+
+        }
+        else {
+           $valid = false;
+           $message = 'Nincs elég pontod hogy új kérést kezdeményezz. A pontszerzéshez tölts fel dokumentumot ,vagy teljesíts kérést!';
+           
+        }
+
+        return
+        json_encode(
+            //és itt volt a probléma
+            array(
+                'valid' => $valid, 
+                'message' => $message
+            )
+        );
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
 
 
 

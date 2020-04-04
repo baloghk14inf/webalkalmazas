@@ -1,8 +1,8 @@
-<div class="col-sm-12 col-lg-8 "></div>
+<div class="col-sm-12 col-lg-9 "></div>
 <div class="col-sm-12 col-lg-12 ">
 <div class="col-sm-12 col-lg-4 "></div>
 <nav>
-    <ul class="pagination pagination-sm " >
+    <ul class="pagination pagination-sm " id="pagination" >
         <li id="nav1" ><a id="a1" >Előző</a></li>
         <li id="nav2" ><a id="a2" >1</a></li>
         <li id="nav3" id="kis-meret" ><a href="#">...</a></li>

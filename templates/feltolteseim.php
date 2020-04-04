@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group col-sm-12 col-lg-6 feltolteseim-frm">
                     <label>Dokumentum éve</label>
-                    <input type="text" class="form-control input-sm" name="dokumentum_eve" id="dokumentum_eve" min="1950" max="aktualis_ev()"  placeholder="pl. 2009">
+                    <input type="text" class="form-control input-sm" name="dokumentum_eve" id="dokumentum_eve" placeholder="pl. 2009">
                 </div>
                 <div class="form-group col-sm-12 col-lg-10 feltolteseim-frm">
                     <label>Forrás</label>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="form-group col-lg-4 feltolteseim-frm">
-                    <input type="submit"  class="btn btn-info" value="Feltölt">
+                    <input type="submit"  class="btn btn-primary" value="Feltölt">
                 </div>
    
             </form>
@@ -89,16 +89,17 @@
             <div class="col-sm-2"></div>
         </div>
         <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8" id="elsodiv"></div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10" id="elsodiv"></div>
+            <div class="col-sm-1"></div>
         </div>
     
-    <?php
+    <div class="row">
 
-    require_once "paginate.php";
+    <?php require_once "paginate.php";?>
     
-    ?>
+    </div>
+    
         
 
     </div>

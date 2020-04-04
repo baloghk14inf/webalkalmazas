@@ -38,11 +38,17 @@
                 </div>
                <input type="submit"  class="btn btn-info" value="Regisztrálok">
                </div>
-               <div class="form-group" >
-                    <label for="" style="display: none" class="uzenet figyelm_uz" >A regisztráció sikeresen megtőrtént, a bejelentkezéshez nyomj a gombra!</label> 
-                    <button type="button" style="display: none" class="btn btn-info btn-block uzenet" onclick="location.href='/login'">Tovább a bejelentkezés oldalra</button>
-                </div>
                 </form>
+
+                    <div class="col-lg-12 ">
+                    <div id='alert'></div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6"><button id="tovabb_gomb" type="button" class="btn btn-info btn-block eltuntet" onclick="location.href='/login'">Tovább a bejelentkezés oldalra</button></div>
+                    <div class="col-lg-3"></div>
+                    </div>
+                    
+                    
+                </div>
     </div>
     <div class="col-sm-4"></div>
     </div>

@@ -15,6 +15,7 @@ function pagination(listazando, oldal) {
         async   : true,
         success : function(result, status, xhr){
 
+
             //ezzel itt eltüntetem a tartalom listázásnál az alert üzenetet.
             $('#alert2').remove();
 
@@ -28,6 +29,10 @@ function pagination(listazando, oldal) {
 
             if (result.content == "") {
                 $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nincs megjeleníthető tartalom.</div>");
+                $("#pagination").addClass("eltuntet");
+            }
+            else {
+                $("#pagination").removeClass("eltuntet");
             }
            /* $("#a1").removeAttr("href");
             $("#a1").removeClass("leptet");
@@ -86,18 +91,72 @@ function pagination(listazando, oldal) {
                 $("#nav5").removeClass("nav-elem-eltuntet");
             }
 
-            //divek dinamikus feltöltése
-            for (var i = 0; i < result.content.length; i++) {
+            if (result.listazando == "feltoltott" || result.listazando == "ellenorzendo") {
                 
-                $('<div id="div' + i + '" class="div-adatok">').appendTo('#elsodiv');
-                $('<a href="/dokumentum/'+ result.content[i].id +'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
-                $('<h6>' +"Feltöltés dátuma: "+ result.content[i].feltoltes_datuma +'</h6>').appendTo('#link'+ i); 
-                $('<h4>'+ result.content[i].dokumentum_cime +'</h4>').appendTo('#link'+ i);
-                $('<h5>' +"Tantárgy: "+ result.content[i].kategoria +" Kategória: "+ result.content[i].targy +'</h5>').appendTo('#link'+ i);
-                $('</a>').appendTo('#link'+ i);
-                $('</div>').appendTo('#div'+ i); 
-                //alert('<p id="p' + i +'">'+ result.content[i].dokumentum_cime +'</p>');
+                //divek dinamikus feltöltése
+                for (var i = 0; i < result.content.length; i++) {
+                    
+                    $('<div id="div' + i + '" class="col-sm-5 div-adatok">').appendTo('#elsodiv');
+                    $('<a href="/dokumentum/'+ result.content[i].id +'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
+                    $('<h4 class="tartalom_cim">'+ result.content[i].dokumentum_cime +'</h4>').appendTo('#link'+ i);
+                    $('<h6 class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].kategoria +'</h6>').appendTo('#link'+ i);
+                    $('<h6 class="tartalom_alcim">' +" Kategória: "+ result.content[i].targy +'</h6>').appendTo('#link'+ i);
+                    $('<h6 class="tartalom_alcim">' +"Feltöltés dátuma: "+ result.content[i].feltoltes_datuma +'</h6>').appendTo('#link'+ i); 
+                    $('</a>').appendTo('#link'+ i);
+                    $('</div>').appendTo('#div'+ i); 
+                    //alert('<p id="p' + i +'">'+ result.content[i].dokumentum_cime +'</p>');
+                    
+                }
+            }
+
+            
+            if (result.listazando == "eldontendo" || result.listazando == "teljesitett") {
+
                 
+                
+                //divek dinamikus feltöltése
+                for (var i = 0; i < result.content.length; i++) {
+
+                    var dokumentum_datum = result.content[i].dokumentum_eve == null ? "-" : result.content[i].dokumentum_eve;
+                    
+                    $('<div id="div' + i + '" class="col-sm-5 div-adatok">').appendTo('#elsodiv');
+                    $('<a href="/dokumentum/'+ result.content[i].dok_id +'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
+                    $('<h4 class="tartalom_cim">'+ result.content[i].k_megnev +'</h4>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].kategoria +'</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +" Kategória: "+ result.content[i].targy + '</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Dokumentum éve: "+ dokumentum_datum + '</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Kérés dátuma: "+ result.content[i].keres_d +'</h6>').appendTo('#link'+ i); 
+                    $('<h6  class="tartalom_alcim">' +"Teljesítés dátuma: "+ result.content[i].teljesites_d +'</h6>').appendTo('#link'+ i); 
+                    $('<h6  class="tartalom_alcim">' +"Feltöltő: "+ result.content[i].teljesito_neve +'</h6>').appendTo('#link'+ i); 
+                    $('</a>').appendTo('#link'+ i);
+                    $('</div>').appendTo('#div'+ i); 
+                    //alert('<p id="p' + i +'">'+ result.content[i].dokumentum_cime +'</p>');
+                    
+                }
+            }
+
+
+            if (result.listazando == "teljesitesre_varakozo" || result.listazando == "ellenorzesre_varakozo") {
+
+                
+                
+                //divek dinamikus feltöltése
+                for (var i = 0; i < result.content.length; i++) {
+
+                    var dokumentum_datum = result.content[i].dokumentum_eve == null ? "-" : result.content[i].dokumentum_eve;
+                    
+                    $('<div id="div' + i + '" class="col-sm-5 div-adatok">').appendTo('#elsodiv');
+                    $('<a href="#" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
+                    $('<h4 class="tartalom_cim">'+ result.content[i].k_megnev +'</h4>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].kategoria +'</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +" Kategória: "+ result.content[i].targy + '</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Dokumentum éve: "+ dokumentum_datum + '</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Kérés dátuma: "+ result.content[i].keres_d +'</h6>').appendTo('#link'+ i);
+                    $('</a>').appendTo('#link'+ i);
+                    $('</div>').appendTo('#div'+ i); 
+                    //alert('<p id="p' + i +'">'+ result.content[i].dokumentum_cime +'</p>');
+                    
+                }
             }
 
            
@@ -111,7 +170,20 @@ function pagination(listazando, oldal) {
         }	// error
     }); // $.ajax	
 
-    
-
-
 }
+
+$(document).on( 'click', '.leptet', function(){
+
+    var feldarabolt_href = this.href.split('#');
+    var oldalsz = parseInt(feldarabolt_href[2]);
+    var listazando = feldarabolt_href[1].replace('&', '');
+
+    pagination(listazando, oldalsz);
+    
+} );
+
+$('#listazando').on('change', function() {
+    var listazando = $('#listazando').val();
+    pagination(listazando, "");
+    
+  });

@@ -39,56 +39,39 @@ $(document).ready(function()
 
         
         }// fields_end
-    });//bootstrap_validators_end
-    
-
-
-    $('#form-login').on('submit', function(event) {
-
-        event.preventDefault();
-
+    }).on('success.form.bv', function(e) { //itt végzem el az ürlap küldését
         
+        e.preventDefault();
 
-        if ($("#form-login").data('bootstrapValidator').isValid()) {
-            // Use Ajax to submit form data
-            
-            
-            $.ajax({
-                url     : 'login.ajax.php', //Target URL for JSON file
-                type    : 'POST',
-                data    : $("#form-login :input").serialize(),
-                cache   : false,
-                dataType: 'json',
-                async   : true,
-                success : function(result, status, xhr){
-                    alert("Sikeres");
-                    console.log(result.valid);
+        $.ajax({
+            url     : 'login.ajax.php', //Target URL for JSON file
+            type    : 'POST',
+            data    : $("#form-login :input").serialize(),
+            cache   : false,
+            dataType: 'json',
+            async   : true,
+            success : function(result, status, xhr){
+                alert("Sikeres");
+                
 
-                    if (result.valid == false) {
+                if (result.valid == false) {
 
-                        $("#uzenet").html(result.message);
-                        $( "#uzenet" ).show( "slow" );
-                        //$("#form-login").data('bootstrapValidator').resetForm(); 
-                    }
-                    else {
-                        //location.reload();
-                        window.location.replace('/registration'); //ez jó lessz makd igy bejelentkezés után és igy már nem is tud majd visszalépni a login oldalára
-                    }
-                   
-                },	// success 
-                error : function(xhr, status){
-                    alert("Sikertelen");
+                    $('#alert').html("<div class='alert alert-danger' role='alert'>"+ result.message +"</div>");
+                    $('#alert').show();
+                }
+                else {
+                    //location.reload();
+                    window.location.replace('/registration'); //ez jó lessz makd igy bejelentkezés után és igy már nem is tud majd visszalépni a login oldalára
+                }
+               
+            },	// success 
+            error : function(xhr, status){
+                alert("Sikertelen");
 
-                }	// error
-            }); // $.ajax	
-        }	// if
-
-    });  // submit
+            }	// error
+        }); // $.ajax	
+    });//bootstrap_validators_end
 
 
+});// document_ready
 
-
-
-
-
-}) // document_ready

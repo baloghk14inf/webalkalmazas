@@ -57,7 +57,9 @@ li.pointer {
     background-color:#0092ab;
     border-radius: 4px;
     padding: 20px;
-    margin-top: 15px;
+    margin-top: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
     
 }
 .div-adatok:hover {
@@ -66,13 +68,31 @@ li.pointer {
 .tartalom-a {
     text-decoration: none;
     display: block;
-    color: white;
-    
 }
 .tartalom-a:hover {
     text-decoration: none;
     color: white;
 
+}
+textarea {
+    resize: none;
+ }
+.kereseim-gomb {
+    margin-top: 23px;
+    margin-left: 3px;
+}
+.eltuntet {
+    display: none;
+}
+.tartalom_cim {
+    color: #ACD7C7;
+    white-space: nowrap; 
+    width: 100%; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+.tartalom_alcim {
+    color: #001B11;
 }
 @media screen and (max-width: 700px) {
     .log-reg-container {
@@ -87,6 +107,10 @@ li.pointer {
     }
     #kis-meret {
         display: none;
+    }
+    .kereseim-gomb {
+        margin-top: 0px;
+        margin-left: 0px;
     }
   }
   @media screen and (max-width: 1120px) {

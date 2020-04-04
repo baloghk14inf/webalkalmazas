@@ -239,6 +239,18 @@ function feltolteseimController()
 
 }
 
+function kereseimController()
+{
+
+    return[
+        'kereseim',
+        [
+            'title' => 'Kéréseim'
+        ]
+        ];
+
+}
+
 function logoutController()
 {
     session_destroy();

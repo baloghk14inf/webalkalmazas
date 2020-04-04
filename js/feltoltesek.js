@@ -1,19 +1,10 @@
-
-function proba(){ //az aktuális dátum évének kiszámolása hogy ne lehessen nygobb értéket megadni
-    var pathArray = window.location.href.split('#');
-    alert(pathArray[1]);
-}
-function aktualis_ev(){ //az aktuális dátum évének kiszámolása hogy ne lehessen nygobb értéket megadni
-    var today = new Date();
-    var yyyy = today.getFullYear(); 
-    today = yyyy;
-    return today;
-}
-
 $(document).ready(function () {
 
 
+
     pagination("feltoltott", ""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
+
+    aktualis_ev = aktualis_ev();
 
     $("li.disabled a").on(function() { //ezzel megakadályozom azt hogy ha disabled a nav ellem akkor se lehessen rányomni
         return false;
@@ -69,7 +60,12 @@ $(document).ready(function () {
             dokumentum_eve : {
                 validators: {
                     integer: {
-                        message: 'Nem évet adtál meg adtál meg!'
+                        message: 'Nem évet adtál meg!'
+                    },
+                    between: {
+                        min: 1950,
+                        max: aktualis_ev,
+                        message: 'A megadandó évnek 1950-'+aktualis_ev+' közé kell esnie!'
                     }
                 }
             },
@@ -83,15 +79,9 @@ $(document).ready(function () {
 
         
         }// fields_end
-    });//bootstrap_validators_end
-    
-
-
-    $('#form-feltolteseim').on('submit', function(event) {
-
+    }).on('success.form.bv', function(e) { //itt végzem el az ürlap küldését
         
-
-        event.preventDefault();
+        e.preventDefault();
 
         var fd = new FormData();
         var files = $('#file')[0].files[0];
@@ -104,71 +94,50 @@ $(document).ready(function () {
         fd.append('dokumentum_eve',$('#dokumentum_eve').val());
         fd.append('forras',$('#forras').val());
 
-        if ($("#form-feltolteseim").data('bootstrapValidator').isValid()) {
-            // Use Ajax to submit form data
-            
-            
-            $.ajax({
-                url     : 'feltolt.php', //Target URL for JSON file
-                type    : 'POST',
-                data    : fd,
-                async: false,           //Ezzel itt kikapcsoltam azt hogy 2 üzenet térjen vissza
-                contentType: false,
-                processData: false,
-               // dataType: 'json',
-                success : function(result, status, xhr){
-                    alert("Sikeres");
-     
-                    var valasz = JSON.parse(result);
+        $.ajax({
+            url     : 'feltolt.php', //Target URL for JSON file
+            type    : 'POST',
+            data    : fd,
+            async: true,           //Ezzel itt kikapcsoltam azt hogy 2 üzenet térjen vissza
+            contentType: false,
+            processData: false,
+           // dataType: 'json',
+            success : function(result, status, xhr){
+                alert("Sikeres");
+ 
+                var valasz = JSON.parse(result);
 
-                    if (valasz.valid == true) {
+                if (valasz.valid == true) {
+                    
+                    $("#form-feltolteseim :input").each(function() {
                         
-                        $("#form-feltolteseim :input").each(function() {
-                            
-                            if (this.type != "submit") {
-                                $(this).val('');
-                            }
-                        });
+                        if (this.type != "submit") {
+                            $(this).val('');
+                        }
+                    });
 
-                        $("#form-feltolteseim").data('bootstrapValidator').resetForm();
+                    $("#form-feltolteseim").data('bootstrapValidator').resetForm();
 
-                        $('#alert').html("<div class='alert alert-success' role='alert'>"+ valasz.message +"</div>");
-                        $('#alert').show();
-                        
-                    }
-                    else {
-                        
-                        $('#alert').html("<div class='alert alert-danger' role='alert'>"+ valasz.message +"</div>");
-                        $('#alert').show();
-                    }
+                    $('#alert').html("<div class='alert alert-success' role='alert'>"+ valasz.message +"</div>");
+                    $('#alert').show();
+                    
+                }
+                else {
+                    
+                    $('#alert').html("<div class='alert alert-danger' role='alert'>"+ valasz.message +"</div>");
+                    $('#alert').show();
+                }
 
-                },	// success 
-                error : function(xhr, status){
-                    alert("Sikertelen");
-                    $("#messageText_registration").text(status);
+            },	// success 
+            error : function(xhr, status){
+                alert("Sikertelen");
+                $("#messageText_registration").text(status);
 
-                    $("#form-registration").bootstrapValidator('disableSubmitButtons', false);
-                    $("#messageBox_registration").fadeOut();
-                }	// error
-            }); // $.ajax	
-        }	// if
+                $("#form-registration").bootstrapValidator('disableSubmitButtons', false);
+                $("#messageBox_registration").fadeOut();
+            }	// error
+        }); // $.ajax	
+    });//bootstrap_validators_end
     
-    });  // submit
-
-    $(document).on( 'click', '.leptet', function(){
-
-        var feldarabolt_href = this.href.split('#');
-        var oldalsz = parseInt(feldarabolt_href[2]);
-        var listazando = feldarabolt_href[1].replace('&', '');
-
-        pagination(listazando, oldalsz);
-        
-    } );
-
-    $('#listazando').on('change', function() {
-        var listazando = $('#listazando').val();
-        pagination(listazando, "");
-        
-      });
     
 });

@@ -26,7 +26,7 @@
 
 
 
-<?php require_once "templates/min.js.html";?>
+<?php require_once "min.js.html";?>
 
 <?php if ($_SERVER["REQUEST_URI"] == "/login" | $_SERVER["REQUEST_URI"] == "/"):?>
 <script src='js/login.js'></script>
@@ -34,9 +34,17 @@
 <?php if ($_SERVER["REQUEST_URI"] == "/registration"):?>
 <script src='js/registration.js'></script>
 <?php endif; ?>
-<?php if ($_SERVER["REQUEST_URI"] == "/feltolteseim"):?>
+<?php if ($_SERVER["REQUEST_URI"] == "/kereseim" || $_SERVER["REQUEST_URI"] == "/feltolteseim"):?>
 <script src='js/pagination.js'></script> <!--A body elé kell beszúrni a pagination kezdeti értékének meghatározása miatt-->
+<?php endif; ?>
+<?php if ($_SERVER["REQUEST_URI"] == "/feltolteseim"):?>
 <script src='js/feltoltesek.js'></script>
+<?php endif; ?>
+<?php if ($_SERVER["REQUEST_URI"] == "/kereseim" || $_SERVER["REQUEST_URI"] == "/feltolteseim"):?>
+<script src='js/kozos.js'></script>
+<?php endif; ?>
+<?php if ($_SERVER["REQUEST_URI"] == "/kereseim"):?>
+<script src='js/kereseim.js'></script>
 <?php endif; ?>
     
 </body>

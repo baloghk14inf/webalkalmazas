@@ -14,11 +14,11 @@
                    <input type="password" class="form-control" name="jelszo" id="exampleInputPassword1" placeholder="Valami23">
                 </div>
                    <input type="submit"  class="btn btn-info" value="Belépés">
-                <div class="form-group">
-                   <small><label style="display: none" id="uzenet"class="figyelm_uz" ></label></small> 
-                </div>
              </div>
          </form>
+         <div class="col-lg-12">
+                <div id='alert'></div>
+         </div>
          <div class="row text-center">
             <a href="/registration">Fiók létrehozása-></a>
          </div>
