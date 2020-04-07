@@ -267,9 +267,28 @@ function file_feltoltes($connection,$message, $valid)
                         '{$file_hash}')");
 
                     if ($insert) {
+
                         move_uploaded_file($_FILES['file']['tmp_name'],$helymegh); // a paraméterben tárolt file-t a $location-ben található
                         $valid = true;
                         $message = "A feltöltés sikeresen megtörtént.";
+
+                        //itt ellenörzöm hogy kérés teljesítés történik-e
+                        //ha igen akkor megkapjuk a kérés id-jét, ha nem akkor pedig egy karaktersorozatot pl. ebben az esetben: "undefined" 
+                        // $_POST stringet ad vissza még akor is ha számot adunk át az űrlappal
+                        //tehát az intval() átalakítja ebben az esetben a $_POST['keres'] változót egész számmá
+                        //ha sikeres vissza adja a postban található számot ha nem akkor pedig 0 át ad vissza
+                        if (intval($_POST['keres'])) { 
+                            
+                            $update_keres_statusz = mysqli_query($connection, "UPDATE keresek SET Statuszok_id= 1 WHERE id='{$_POST["keres"]}'");
+                            
+                            $utoljara_felt_dok = mysqli_fetch_assoc(mysqli_query($connection, "SELECT MAX(id) AS id FROM dokumentumok WHERE Felhasznalok_id='{$_SESSION["id"]}'"));
+                            $insert_telj_keresek = mysqli_query($connection, "INSERT INTO teljesitett_keresek (Keresek_id, Dokumentumok_id)
+                                                                              VALUE ('" .$_POST['keres']."', '".$utoljara_felt_dok['id']."')");
+                            
+                            $message.= " A kérést sikeresen teljesítetted.";
+
+                        }
+                        
                     }
 
             
@@ -442,7 +461,16 @@ function uj_keres($connection, $message, $valid)
         errorPage();
     }
 }
+function ujra_felhasznalhato_lekerdezes($connection, $query) {
 
+    if ($result = mysqli_query($connection, $query)) {
+        $row = mysqli_fetch_assoc($result);
+        return $row;
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }  
+}
 
 
 

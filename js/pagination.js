@@ -1,14 +1,18 @@
-function pagination(listazando, oldal) {
+function pagination(listazando, oldal, targy, kategoria) {
 
     var listazando = listazando;
     var oldal = oldal;
+    var targy = targy;
+    var kategoria = kategoria;
 
     $.ajax({
         url     : 'pagination.php', //Target URL for JSON file
         type    : 'POST',
         data    : {
             'listazando': listazando,
-            'oldal': oldal
+            'oldal': oldal,
+            'targy': targy,
+            'kategoria': kategoria
         },
         cache   : false,
         dataType: 'json',
@@ -28,7 +32,13 @@ function pagination(listazando, oldal) {
             }
 
             if (result.content == "") {
-                $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nincs megjeleníthető tartalom.</div>");
+                if (result.listazando == "aktiv-keresek") {
+                    $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nem található a feltétel-nek-eknek megfelelő kérés.</div>");
+                }
+                else {
+                    $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nincs megjeleníthető tartalom.</div>");
+                }
+                
                 $("#pagination").addClass("eltuntet");
             }
             else {
@@ -136,20 +146,23 @@ function pagination(listazando, oldal) {
             }
 
 
-            if (result.listazando == "teljesitesre_varakozo" || result.listazando == "ellenorzesre_varakozo") {
+            if (result.listazando == "teljesitesre_varakozo" || result.listazando == "ellenorzesre_varakozo" || result.listazando == "aktiv-keresek") {
 
-                
+                var meretezes = result.listazando == "aktiv-keresek" ? "col-sm-12" : "col-sm-5";
+                var szoveg_meretezes = result.listazando != "aktiv-keresek" ? "meretezett-szoveg" : "";
+                var query_str = result.listazando == "aktiv-keresek" ? '?keres-id=' + result.content.id : "col-sm-5";
                 
                 //divek dinamikus feltöltése
                 for (var i = 0; i < result.content.length; i++) {
 
                     var dokumentum_datum = result.content[i].dokumentum_eve == null ? "-" : result.content[i].dokumentum_eve;
+                    var query_str = result.listazando == "aktiv-keresek" ? '/feltolteseim?keres=' + result.content[i].keres_id : "#";
                     
-                    $('<div id="div' + i + '" class="col-sm-5 div-adatok">').appendTo('#elsodiv');
-                    $('<a href="#" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
-                    $('<h4 class="tartalom_cim">'+ result.content[i].k_megnev +'</h4>').appendTo('#link'+ i);
-                    $('<h6  class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].kategoria +'</h6>').appendTo('#link'+ i);
-                    $('<h6  class="tartalom_alcim">' +" Kategória: "+ result.content[i].targy + '</h6>').appendTo('#link'+ i);
+                    $('<div id="div' + i + '" class="'+ meretezes +' div-adatok">').appendTo('#elsodiv');
+                    $('<a href="'+query_str+'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
+                    $('<h4 class="tartalom_cim '+ szoveg_meretezes +'">'+ result.content[i].k_megnev +'</h4>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].targy +'</h6>').appendTo('#link'+ i);
+                    $('<h6  class="tartalom_alcim">' +" Kategória: "+ result.content[i].kategoria + '</h6>').appendTo('#link'+ i);
                     $('<h6  class="tartalom_alcim">' +"Dokumentum éve: "+ dokumentum_datum + '</h6>').appendTo('#link'+ i);
                     $('<h6  class="tartalom_alcim">' +"Kérés dátuma: "+ result.content[i].keres_d +'</h6>').appendTo('#link'+ i);
                     $('</a>').appendTo('#link'+ i);
@@ -178,12 +191,26 @@ $(document).on( 'click', '.leptet', function(){
     var oldalsz = parseInt(feldarabolt_href[2]);
     var listazando = feldarabolt_href[1].replace('&', '');
 
-    pagination(listazando, oldalsz);
+    pagination(listazando, oldalsz,"","");
     
 } );
 
 $('#listazando').on('change', function() {
     var listazando = $('#listazando').val();
-    pagination(listazando, "");
+    pagination(listazando, "","","");
     
-  });
+});
+
+if (window.location.pathname == "/aktiv-keresek") {
+    pagination("aktiv-keresek","","","")
+}
+$('#targy').on('change', function() {
+    
+    pagination("aktiv-keresek", "", $('#targy').val(), $('#kategoria').val());
+    
+});
+$('#kategoria').on('change', function() {
+    
+    pagination("aktiv-keresek", "", $('#targy').val(), $('#kategoria').val());
+    
+});

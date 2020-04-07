@@ -86,13 +86,15 @@ textarea {
 }
 .tartalom_cim {
     color: #ACD7C7;
+}
+.tartalom_alcim {
+    color: #001B11;
+}
+.meretezett-szoveg {
     white-space: nowrap; 
     width: 100%; 
     overflow: hidden;
     text-overflow: ellipsis; 
-}
-.tartalom_alcim {
-    color: #001B11;
 }
 @media screen and (max-width: 700px) {
     .log-reg-container {

@@ -1,8 +1,9 @@
 $(document).ready(function () {
 
 
+    pagination("feltoltott","","",""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
 
-    pagination("feltoltott", ""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
+    
 
     aktualis_ev = aktualis_ev();
 
@@ -83,6 +84,7 @@ $(document).ready(function () {
         
         e.preventDefault();
 
+
         var fd = new FormData();
         var files = $('#file')[0].files[0];
         
@@ -93,6 +95,7 @@ $(document).ready(function () {
         fd.append('oldalszam',$('#oldalszam').val());
         fd.append('dokumentum_eve',$('#dokumentum_eve').val());
         fd.append('forras',$('#forras').val());
+        fd.append('keres',$('#keres').val());  //átadom a keres_id-t
 
         $.ajax({
             url     : 'feltolt.php', //Target URL for JSON file
@@ -116,7 +119,18 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#form-feltolteseim").data('bootstrapValidator').resetForm();
+                    //alaphelyzetbe állítom a bootstrap validátort
+                    $("#form-feltolteseim").data('bootstrapValidator').resetForm(); 
+
+                    //sikeres kérés teljesítés után törlöm a kéréshez köthető tartalmat az oldalról
+                    $("#keres_alert").remove();
+                    $("#keres_input").remove();
+                    $("#targy").removeAttr('disabled');
+                    $("#kategoria").removeAttr('disabled');
+
+                    //ezzel itt megszüntetem a lehetőséget hogy az adott teljesítő ismét töltsön fel az adott kéérésnek
+                    //(az url modosításával megszüntetem a query stringet)
+                    window.history.replaceState('data to be passed', 'Feltöltéseim', '/feltolteseim');
 
                     $('#alert').html("<div class='alert alert-success' role='alert'>"+ valasz.message +"</div>");
                     $('#alert').show();

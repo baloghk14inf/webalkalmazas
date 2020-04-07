@@ -4,11 +4,25 @@
     <div class="col-sm-10 ker-felt-container">
     <div class="col-sm-4 p-4 m-4 mt-5">
     <h4 class="text-center l-r-cim" >Dokumentum feltöltése</h4>
+        <div class="col-lg-1"></div>
+        <?php if (!empty($keres_megnevezese)):?>
+        <div class="col-lg-10" id='keres_alert'>
+            <div id='k_megenevezes_alert' class='alert alert-info' style="margin-top:15px" role='alert'><?=$keres_megnevezese != "" ? "<strong>Kiválasztott kérés megnevezése:</strong> " .$keres_megnevezese : ""?></div>
+        </div>
+        <?php endif;?>
+        <div class="col-lg-1"></div>
         <form class="form-container" id="form-feltolteseim" method="post"  role="form"> 
             <div id="elr">
+
+                <?php if (!empty($keres)):?>
+                <div class="form-group col-sm-12 col-lg-10 feltolteseim-frm" id="keres_input">
+                    <input type="hidden" class="form-control input-sm" id="keres" value="<?=$keres?>"">
+                </div>
+                <?php endif;?>
+
                 <div class="form-group col-sm-12 col-lg-6 feltolteseim-frm">
                     <label for="targy">Tárgy</label>
-                    <select class="form-control input-sm" name="targy" id="targy">
+                    <select class="form-control input-sm" name="targy" id="targy" <?=$targy == "" ? '' : 'disabled'?>>
                     <option value="">-- Kiválaszt --</option>
 
                     <?php
@@ -18,13 +32,13 @@
  
                     foreach ($record as $row):?>
 
-                    <option value="<?=$row['id']?>"><?=$row['nev']?></option>
+                    <option value="<?=$row['id']?>"<?=$targy == $row['id'] ? 'selected' : ''?>><?=$row['nev']?></option>
                     <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group col-sm-12 col-lg-6 feltolteseim-frm">
                     <label for="kategoria">Kategória</label>
-                    <select class="form-control input-sm" name="kategoria" id="kategoria">
+                    <select class="form-control input-sm" name="kategoria" id="kategoria" <?=$kategoria == "" ? '' : 'disabled'?>>
                     <option value="">-- Kiválaszt --</option>
 
                     <?php
@@ -32,10 +46,8 @@
                     $record = select_elemek_lekerdezese($connection, $query);       
                     foreach ($record as $row):?>
 
-                    <option value="<?=$row['id']?>"><?=$row['nev']?></option>
+                    <option value="<?=$row['id']?>"<?=$kategoria == $row['id'] ? 'selected' : ''?>><?=$row['nev']?></option>
                     <?php endforeach; ?>
-                    </select>
-
                     </select>
                 </div>
                 <div class="form-group col-sm-12 col-lg-10 feltolteseim-frm">
@@ -48,7 +60,7 @@
                 </div>
                 <div class="form-group col-sm-12 col-lg-6 feltolteseim-frm">
                     <label>Dokumentum éve</label>
-                    <input type="text" class="form-control input-sm" name="dokumentum_eve" id="dokumentum_eve" placeholder="pl. 2009">
+                    <input type="text" class="form-control input-sm" name="dokumentum_eve" id="dokumentum_eve" placeholder="pl. 2009" <?=$dokumentum_eve != "" ? 'value="'.$dokumentum_eve.'" disabled' : ''?>>
                 </div>
                 <div class="form-group col-sm-12 col-lg-10 feltolteseim-frm">
                     <label>Forrás</label>

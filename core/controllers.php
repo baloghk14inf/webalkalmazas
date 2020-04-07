@@ -229,11 +229,40 @@ function registrationFormController()
 }
 function feltolteseimController()
 {
+    $keres_id = filter_input(INPUT_GET, 'keres') ?? "";
+    $keres_megnevezese ="";
+    $targy ="";
+    $kategoria ="";
+    $dokumentum_eve ="";
+
+    
+    
+    if (!empty($keres_id)) {
+        $connection = getConnection();
+
+        
+        $query_keres = "SELECT k.id id, k.keres_megnevezese keres_megnevezese, k.Targyak_id targy_id, k.Kategoriak_id kategoria_id , k.ev dokumentum_eve 
+        FROM keresek k WHERE k.id = '{$keres_id}'";
+
+
+        $keres = ujra_felhasznalhato_lekerdezes($connection, $query_keres); 
+
+        $keres_megnevezese = $keres['keres_megnevezese'];
+        $targy = $keres['targy_id'];
+        $kategoria = $keres['kategoria_id'];
+        $dokumentum_eve = $keres['dokumentum_eve'] != null ? $keres['dokumentum_eve'] : "";
+
+    }
 
     return[
         'feltolteseim',
         [
-            'title' => 'Feltöltéseim'
+            'title' => 'Feltöltéseim',
+            'keres' => $keres_id,
+            'keres_megnevezese' => $keres_megnevezese,
+            'targy' => $targy,
+            'kategoria' => $kategoria,
+            'dokumentum_eve' => $dokumentum_eve
         ]
         ];
 
@@ -246,6 +275,17 @@ function kereseimController()
         'kereseim',
         [
             'title' => 'Kéréseim'
+        ]
+        ];
+
+}
+function aktiv_keresekController()
+{
+
+    return[
+        'aktivkeresek',
+        [
+            'title' => ' Aktív kérések'
         ]
         ];
 

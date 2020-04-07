@@ -29,6 +29,9 @@
     $routes['GET']['/registration'] = 'registrationFormController'; //Ez a login formra fog irányítani
     $routes['GET']['/feltolteseim'] = 'feltolteseimController'; //Ez a login formra fog irányítani
     $routes['GET']['/kereseim'] = 'kereseimController'; //Ez a login formra fog irányítani
+    $routes['GET']['/aktiv-keresek'] = 'aktiv_keresekController'; //Ez a login formra fog irányítani
+
+    //$routes['GET']['/feltolteseim/(?<id>[\d]+)'] = 'registrationController';
 
     $routes['GET']['/logout'] = 'logoutController';
     
