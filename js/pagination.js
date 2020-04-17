@@ -1,4 +1,4 @@
-function pagination(listazando, oldal, targy, kategoria) {
+function pagination(listazando, oldal, targy, kategoria, ev) {
 
     var listazando = listazando;
     var oldal = oldal;
@@ -6,19 +6,21 @@ function pagination(listazando, oldal, targy, kategoria) {
     var kategoria = kategoria;
 
     $.ajax({
-        url     : 'pagination.php', //Target URL for JSON file
+        url     : '/pagination.php', // a / karakter az a 2. szint miatt kell pl.(/feltoltesek/kivalasztott-keres-68)
         type    : 'POST',
         data    : {
             'listazando': listazando,
             'oldal': oldal,
             'targy': targy,
-            'kategoria': kategoria
+            'kategoria': kategoria,
+            'ev': ev
         },
         cache   : false,
         dataType: 'json',
         async   : true,
         success : function(result, status, xhr){
 
+            console.log(result);
 
             //ezzel itt eltüntetem a tartalom listázásnál az alert üzenetet.
             $('#alert2').remove();
@@ -28,22 +30,46 @@ function pagination(listazando, oldal, targy, kategoria) {
             for (var i = 0; i < result.size; i++) {
 
                 $("#div" + i).remove();
+                $("#szoveg_d" + i).remove();
                 
             }
 
             if (result.content == "") {
                 if (result.listazando == "aktiv-keresek") {
+
                     $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nem található a feltétel-nek-eknek megfelelő kérés.</div>");
+
                 }
-                else {
+                else if(parseInt(result.listazando)){ //int-é kell alakítani mert str-kénk kerül elküldésre és úgy is jön vissza
+
+                    $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'>Ezt a dokumentumot még nem értékelte senki. Legyél Te az első.</div>");
+
+                }
+                else if(result.listazando.split("=")[0] == "?keresendo"){ //int-é kell alakítani mert str-kénk kerül elküldésre és úgy is jön vissza
+
+                    $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'>Nem található a keresésnek megfelelő dokumentum.</div>");
+
+                }
+                else { 
+
                     $('#ures').html("<div id='alert2' class='alert alert-info' role='alert'> Nincs megjeleníthető tartalom.</div>");
+
                 }
                 
-                $("#pagination").addClass("eltuntet");
+                $("#pagination").addClass("eltuntet"); // azért van kivül mert minden esetben használatba kell venni
             }
             else {
-                $("#pagination").removeClass("eltuntet");
+
+                if (result.total <= 6) {
+                    $("#pagination").addClass("eltuntet");  
+                }
+                else {
+                    $("#pagination").removeClass("eltuntet");
+                }
+                
             }
+
+
            /* $("#a1").removeAttr("href");
             $("#a1").removeClass("leptet");
             $("#a2").removeAttr("href");
@@ -100,13 +126,15 @@ function pagination(listazando, oldal, targy, kategoria) {
                 $("#nav6").removeClass("disabled pointer");
                 $("#nav5").removeClass("nav-elem-eltuntet");
             }
+     
+            if (result.listazando == "feltoltott" || result.listazando == "ellenorzendo" || result.listazando.split("=")[0] == "?keresendo" || result.listazando == "feltoltesek") {
 
-            if (result.listazando == "feltoltott" || result.listazando == "ellenorzendo") {
-                
+
+                $meret = ((result.listazando.split("=")[0] == "?keresendo") || (result.listazando == "feltoltesek")) ? "col-sm-12" : "col-sm-5";
                 //divek dinamikus feltöltése
                 for (var i = 0; i < result.content.length; i++) {
                     
-                    $('<div id="div' + i + '" class="col-sm-5 div-adatok">').appendTo('#elsodiv');
+                    $('<div id="div' + i + '" class="'+ $meret +' div-adatok">').appendTo('#elsodiv');
                     $('<a href="/dokumentum/'+ result.content[i].id +'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
                     $('<h4 class="tartalom_cim">'+ result.content[i].dokumentum_cime +'</h4>').appendTo('#link'+ i);
                     $('<h6 class="tartalom_alcim">' +"Tantárgy: "+ result.content[i].kategoria +'</h6>').appendTo('#link'+ i);
@@ -150,13 +178,13 @@ function pagination(listazando, oldal, targy, kategoria) {
 
                 var meretezes = result.listazando == "aktiv-keresek" ? "col-sm-12" : "col-sm-5";
                 var szoveg_meretezes = result.listazando != "aktiv-keresek" ? "meretezett-szoveg" : "";
-                var query_str = result.listazando == "aktiv-keresek" ? '?keres-id=' + result.content.id : "col-sm-5";
+
                 
                 //divek dinamikus feltöltése
                 for (var i = 0; i < result.content.length; i++) {
 
                     var dokumentum_datum = result.content[i].dokumentum_eve == null ? "-" : result.content[i].dokumentum_eve;
-                    var query_str = result.listazando == "aktiv-keresek" ? '/feltolteseim?keres=' + result.content[i].keres_id : "#";
+                    var query_str = result.listazando == "aktiv-keresek" ? '/feltolteseim/kivalasztott-keres-' + result.content[i].keres_id : "#";
                     
                     $('<div id="div' + i + '" class="'+ meretezes +' div-adatok">').appendTo('#elsodiv');
                     $('<a href="'+query_str+'" id="link'+ i +'" class="tartalom-a">').appendTo('#div'+ i);
@@ -172,9 +200,43 @@ function pagination(listazando, oldal, targy, kategoria) {
                 }
             }
 
-           
+            if (parseInt(result.listazando)) {
+
             
-            
+                for (var i = 0; i < result.content.length; i++) {
+
+                    
+                    $('<div id="div' + i + '" class="div-hozzaszolas">').appendTo('#elsodiv');
+                    $('<a href="https://www.flaticon.com/authors/pixel-perfect" id="link'+ i +'" title="Pixel perfect">').appendTo('#div'+ i);
+
+                    for (var j = 0; j < result.content[i].pont; j++) {
+
+                        $('<img src="/felhasznalt kepek/star-teli.png" class="csillag" alt="">').appendTo('#link'+ i);
+                        
+                    }
+                    if (result.content[i].pont.length != 5 ) {
+
+                        for (var k = 0; k < (5-result.content[i].pont); k++) {
+
+                            $('<img src="/felhasznalt kepek/star-ures.png"  class="csillag" alt="">').appendTo('#link'+ i);
+                        }
+                            
+                    }
+                    $('</a>').appendTo('#link'+ i);
+                    $('<span  class="hozzaszolo">' + result.content[i].ertekelo +'</span>').appendTo('#div'+ i);
+                    $('<button type="button" class=" btn btn-info btn-xs bejelent-gomb" onclick="window.location.href='+"'"+'/bejelentes/hozzaszolas-'+result.content[i].hozzasz_id+"';"+'">Bejelentem</button>').appendTo('#div'+ i);
+                    $('<span  class="hozzaszolas-datuma">' + result.content[i].ertekeles_datuma +'</span>').appendTo('#div'+ i);
+                    
+                   
+                    $('</div>').appendTo('#div'+ i); 
+
+                    $('<div id="szoveg_d'+ i + '" class="ertekeles_szovegdoboz">').appendTo('#elsodiv');
+                    $('<p>' + result.content[i].megjegyzes + '</p>').appendTo('#szoveg_d'+ i);
+                    $('</div>').appendTo('#szoveg_d'+ i); 
+                    
+                }
+            }
+
 
         },	// success 
         error : function(xhr, status){
@@ -191,26 +253,30 @@ $(document).on( 'click', '.leptet', function(){
     var oldalsz = parseInt(feldarabolt_href[2]);
     var listazando = feldarabolt_href[1].replace('&', '');
 
-    pagination(listazando, oldalsz,"","");
+    pagination(listazando, oldalsz,"","","");
     
 } );
 
 $('#listazando').on('change', function() {
     var listazando = $('#listazando').val();
-    pagination(listazando, "","","");
+    pagination(listazando, "","","" , "");
     
 });
 
 if (window.location.pathname == "/aktiv-keresek") {
-    pagination("aktiv-keresek","","","")
+    pagination("aktiv-keresek","","","", "")
 }
-$('#targy').on('change', function() {
+$('#aktiv_k_targy').on('change', function() {
     
-    pagination("aktiv-keresek", "", $('#targy').val(), $('#kategoria').val());
-    
-});
-$('#kategoria').on('change', function() {
-    
-    pagination("aktiv-keresek", "", $('#targy').val(), $('#kategoria').val());
+    pagination("aktiv-keresek", "", $('#aktiv_k_targy').val(), $('#aktiv_k_kategoria').val(), "");
     
 });
+$('#aktiv_k_kategoria').on('change', function() {
+    
+    pagination("aktiv-keresek", "", $('#aktiv_k_targy').val(), $('#aktiv_k_kategoria').val(), "");
+    
+});
+if (window.location.pathname == "/feltoltesek") {
+    pagination("feltoltesek","","","", "")
+}
+

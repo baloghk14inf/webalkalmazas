@@ -227,9 +227,10 @@ function registrationFormController()
         ];
 
 }
-function feltolteseimController()
+function feltolteseimController($parameter)
 {
-    $keres_id = filter_input(INPUT_GET, 'keres') ?? "";
+
+    $keres_id = !empty($parameter['id']) ? $parameter['id'] : "";
     $keres_megnevezese ="";
     $targy ="";
     $kategoria ="";
@@ -300,7 +301,115 @@ function logoutController()
         'redirect:/',
         []
     ]; 
+}
+
+function dokumentumController($parameter)
+{
+    $connection = getConnection();
+
+    if ($_SESSION['jogkor'] == 3) {//3 felhasználó
+
+        // a felhasználó a másik ellenörzetlen dokumentumán kívül mindenhez hozzáfér
+        $feltetel= "d.id = '{$parameter["id"]}' AND ((d.Felhasznalok_id = '{$_SESSION["id"]}' AND d.Statuszok_id = 1)
+                                                OR (d.Felhasznalok_id = '{$_SESSION["id"]}' AND d.Statuszok_id = 5)
+                                                OR (d.Felhasznalok_id != '{$_SESSION["id"]}' AND d.Statuszok_id = 5))";
+        
+
+    }
+    elseif ($_SESSION['jogkor'] == 1) {// 1 admin
+
+        //it csak ahoz fér hozzá ami nem az övé és ellenörzetlen mivel ő az admin, és ő nem is tud feltölteni dokumentumot
+        $feltetel= "d.id = '{$parameter["id"]}' AND d.Felhasznalok_id != '{$_SESSION["id"]}' AND d.Statuszok_id = 1";
+    }
+    elseif ($_SESSION['jogkor'] == 2) {// 2 szerkesztő
+
+        //it nem vizsgálom különösen mert ö hozzáfér mind az ellenörzöttjöz és mind a nem ellenörzötthöz
+        $feltetel= "d.id = '{$parameter["id"]}'"; 
+    }
+  /*  if ($_SESSION['jogkor'] == 3 || $_SESSION['jogkor'] == 2) {
+
+        $keres_muvelet = ujra_felhasznalhato_lekerdezes($connection, "SELECT ker.id keres_id FROM teljesitett_keresek tk 
+        INNER JOIN keresek ker ON ker.id = tk.Keresek_id WHERE tk.Dokumentumok_id =".$parameter['id']."
+         AND ker.Felhasznalok_id = '{$_SESSION['id']}' AND ker.Statuszok_id = 6"); 
+        
+    }
+    if ($_SESSION['jogkor'] == 2 || $_SESSION['jogkor'] == 1) {
+
+        $dokumentum_muvelet = ujra_felhasznalhato_lekerdezes($connection, "SELECT ker.id keres_id, d.id dokumentum_id FROM dokumentumok d 
+         INNER JOIN teljesitett_keresek tk ON tk.Dokumentumok_id = d.id INNER JOIN keresek ker ON ker.id = tk.Keresek_id WHERE tk.Dokumentumok_id =".$parameter['id']."
+         AND d.Felhasznalok_id != '{$_SESSION['id']}' AND d.Statuszok_id = 1"); 
+        
+    } */
 
 
+
+    
+    $query = "SELECT d.id id, f.felhasznalonev feltolto, k.nev kategoria, t.nev targy, d.dokumentum_cime dok_cim, d.oldalszam oldalszam, d.Statuszok_id d_statusza,  
+    d.dokumentum_eve dok_eve, d.forras forras, d.dokumentum eleresi_ut, d.feltoltes_datuma feltoltes_datuma, d.file_meret file_meret, AVG(e.pont) pont, ker.id keres_id, 
+    ker.Statuszok_id keres_statusza, ker.Felhasznalok_id kero_id FROM dokumentumok d INNER JOIN felhasznalok f ON f.id = d.Felhasznalok_id INNER JOIN targyak t 
+    ON t.id = d.Targyak_id INNER JOIN kategoriak k ON k.id = d.Kategoriak_id LEFT JOIN ertekelesek e ON e.Dokumentumok_id = d.id   
+    LEFT JOIN teljesitett_keresek tk ON tk.Dokumentumok_id = d.id LEFT JOIN keresek ker ON ker.id = tk.Keresek_id 
+    WHERE ".$feltetel." GROUP BY keres_statusza, kero_id, keres_id";
+    
+
+    $dokumentum =  ujra_felhasznalhato_lekerdezes($connection, $query);
+    $feltoltes_datuma = explode(" ",$dokumentum['feltoltes_datuma']);
+
+
+    if (!empty($dokumentum) AND $dokumentum['id'] != null) { //az átlag számítás miatt akkor us null értéket kapunk ha nincsa a keresénsnek megfelelő dokumentum
+        
+        return[
+            'dokumentum',
+            [
+                'title' => 'Dokumentum | '.$dokumentum['dok_cim'], 
+                'id' => $dokumentum['id'],
+                'dokumentum_cime' => $dokumentum['dok_cim'],
+                'feltolto' => $dokumentum['feltolto'],
+                'kategoria' => $dokumentum['kategoria'],
+                'targy' => $dokumentum['targy'],
+                'oldalszam' => $dokumentum['oldalszam'] != null ? $dokumentum['oldalszam'] : "--",
+                'dokumentum_eve' => $dokumentum['dok_eve'] != null ? $dokumentum['dok_eve'] : "--",
+                'forras' => $dokumentum['forras'],
+                'eleresi_ut' => str_replace("#","%23",$dokumentum['eleresi_ut']), //a # problémát okoz ezért történik meg a csere (hex)
+                'dokumentum_statusza' => $dokumentum['d_statusza'],
+                'feltoltes_datuma' => $feltoltes_datuma[0],
+                'file_meret' => $dokumentum['file_meret'],
+                'atlag_ertekeles' => round($dokumentum['pont']), //a legközelebbi egész szám felé kerekít
+                'keres_id' => $dokumentum['keres_id'],
+                'kero' => $dokumentum['kero_id'], // string. Nem kell átalakítani mert amikor az int-el összehasonlítom atomatikusan átalakításra kerül
+                'keres_statusza' => $dokumentum['keres_statusza']
+
+            ]
+            ];
+    }
+    else {
+    
+        return notFoundController();
+    }
 
 }
+
+function dokumentum_keresesController()
+{
+
+    return[
+        'dokumentum-kereses',
+        [
+            'title' => 'Dokumentum keresése'
+        ]
+        ];
+
+}
+
+function feltoltesekController()
+{
+
+    return[
+        'feltoltesek',
+        [
+            'title' => 'Friss feltoltesek'
+        ]
+        ];
+
+}
+

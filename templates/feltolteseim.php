@@ -84,7 +84,7 @@
     </div>
     <div class="col-sm-8 p-4 m-4 mt-5 ">
     <div class="row">
-        <h4 class="text-center l-r-cim" >Feltöltéseim - Ellenőrzésre várakozó feltöltések</h4>
+        <h4 class="text-center l-r-cim" >Általam feltöltött dokumentumok</h4>
         <div class="row">
         <form class="form-container" method="get" action=''  role="form" id='lista'> 
                 <div class="form-group col-sm-12 col-lg-3 ">

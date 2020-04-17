@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    pagination("eldontendo", "","","");
+    pagination($("#listazando").val(), "","","", ""); //az esetleges oda-vissza navigálás miatt adtam meg a select.val-t
 
     aktualis_ev = aktualis_ev();
     
@@ -53,7 +53,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         $.ajax({
-            url     : 'keres.php', //Target URL for JSON file
+            url     : '/keres.php', //Target URL for JSON file
             type    : 'POST',
             data    : $("#form-kereseim :input").serialize(), 
             dataType: 'json',

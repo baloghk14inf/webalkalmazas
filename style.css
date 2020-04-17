@@ -15,6 +15,7 @@ body {
     border-radius: 10px;
     padding: 20px;
     margin: 0 25px 0 25px;
+    word-wrap: break-word;
 }
 .form-container {
     margin: 30px 50px 30px 50px;
@@ -96,6 +97,89 @@ textarea {
     overflow: hidden;
     text-overflow: ellipsis; 
 }
+.dokumentum-adatok {
+    margin-top: 15px;
+}
+iframe {
+    height: 750px;
+    width: 100%;
+    margin-top: 15px;
+    
+}
+.csillag {
+    width: 15px;
+    height: 15px;
+}
+.div-hozzaszolas {
+    background-color:#0092ab;
+    border-radius: 10px 10px 0px 0px;
+    padding: 15px 20px 15px;
+    margin-top: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
+    word-wrap: break-word;
+}
+.ertekeles_szovegdoboz {
+    background-color:#DCDCDC;
+    border-radius: 0px 0px 7px 7px;
+    padding: 20px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 15px;
+    border: 2px solid;
+    border-color: #0092ab;
+    word-wrap: break-word;
+}
+.hozzaszolo {
+    font-weight: bold;
+    margin-left: 15px;
+}
+.hozzaszolas-datuma {
+    font-weight: bold;
+    float: right;
+}
+.bejelent-gomb {
+    margin-left: 10px;
+    display: none;
+    float: right;
+    color: black;
+    font-weight: bold;
+    border: 1px solid;
+}
+.bejelent-gomb:hover {
+    color: black;
+    border: 1px solid;
+}
+.div-hozzaszolas:hover .bejelent-gomb {
+    display: inline-block;
+}
+#atlag_ertekeles {
+    text-decoration: none;
+}
+.form-dokumentum-muveletek {
+    background-color:#DCDCDC;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 2px dashed;
+    border-color: #0092ab;
+    border-radius: 10px;
+    
+}
+.form-dokumentum-muveletek input {
+    font-weight: bold;
+    color: black;
+}
+.form-dokumentum-muveletek input:hover {
+    font-weight: bold;
+    color: black;
+}
+#d-muveletek-gomb {
+    color: black;
+    font-weight: bold;
+    background-color:  #ffcc00;
+    border: 1px solid;
+}
 @media screen and (max-width: 700px) {
     .log-reg-container {
         margin-top: 0;
@@ -114,6 +198,14 @@ textarea {
         margin-top: 0px;
         margin-left: 0px;
     }
+    iframe {
+        height: 600px;
+        width: 100%;
+        margin-top: 15px;
+        
+    }
+
+
   }
   @media screen and (max-width: 1120px) {
     .navbar-form {

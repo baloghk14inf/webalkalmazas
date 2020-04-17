@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 
-    pagination("feltoltott","","",""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
+    pagination($("#listazando").val(),"","","", ""); //itt hívom meg hogy a függvényt többszőr is meg tudjam majd hívni
 
     
 
@@ -98,7 +98,7 @@ $(document).ready(function () {
         fd.append('keres',$('#keres').val());  //átadom a keres_id-t
 
         $.ajax({
-            url     : 'feltolt.php', //Target URL for JSON file
+            url     : '/feltolt.php', //Target URL for JSON file
             type    : 'POST',
             data    : fd,
             async: true,           //Ezzel itt kikapcsoltam azt hogy 2 üzenet térjen vissza

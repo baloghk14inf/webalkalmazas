@@ -203,6 +203,7 @@ function file_feltoltes($connection,$message, $valid)
     $dokumentum_eve = (empty($_POST["dokumentum_eve"]) ? "NULL" : $_POST['dokumentum_eve']);
     $filenev = $_FILES['file']['name'];
     $dokumentum = $_FILES['file']['tmp_name'];
+    $file_meret = formatSizeUnits(filesize($dokumentum)); //file_size visszaadja a fájl méretét byte-ban
     $file_hash = md5_file($dokumentum);
     $datum = date("Y M");
     $gyoker_mappa = "dokumentumok/";
@@ -253,7 +254,8 @@ function file_feltoltes($connection,$message, $valid)
                         forras,
                         dokumentum,
                         Statuszok_id,
-                        file_hash)
+                        file_hash,
+                        file_meret)
                     VALUES (
                         '{$_SESSION["id"]}',
                         '{$_POST["kategoria"]}', 
@@ -264,13 +266,14 @@ function file_feltoltes($connection,$message, $valid)
                         '{$_POST["forras"]}',
                         '{$helymegh}',
                             1,
-                        '{$file_hash}')");
+                        '{$file_hash}',
+                        '{$file_meret}')");
 
                     if ($insert) {
 
                         move_uploaded_file($_FILES['file']['tmp_name'],$helymegh); // a paraméterben tárolt file-t a $location-ben található
                         $valid = true;
-                        $message = "A feltöltés sikeresen megtörtént.";
+                        $message = "A feltöltés sikeresen megtörtént. A feltöltés hamarosan ellenőrzés alá kerül.";
 
                         //itt ellenörzöm hogy kérés teljesítés történik-e
                         //ha igen akkor megkapjuk a kérés id-jét, ha nem akkor pedig egy karaktersorozatot pl. ebben az esetben: "undefined" 
@@ -472,6 +475,105 @@ function ujra_felhasznalhato_lekerdezes($connection, $query) {
     }  
 }
 
+function formatSizeUnits($bytes) 
+{
+    if ($bytes >= 1073741824)
+    {
+        //number_format(1,2): 1-formázandó szám 2. tizedes számjegy
+        //elosztom az átadott file méretet és elosztom méretnek megfelelően.
+        //A 2. paraméterrel pedig a , után megjelenítendő karakterek számát határozzuk meg
+        $bytes = number_format($bytes / 1073741824, 1) . ' GB';
+    }
+    elseif ($bytes >= 1048576)
+    {
+        $bytes = number_format($bytes / 1048576, 1) . ' MB';
+    }
+    elseif ($bytes >= 1024)
+    {
+        $bytes = number_format($bytes / 1024, 1) . ' KB';
+    }
+    elseif ($bytes >= 130)  //elvileg pdf esetében a legkissebb fájlméret 130 b
+    {
+        $bytes = $bytes . ' bytes';
+    }
+    /*
+    elseif ($bytes > 1)
+    {
+        $bytes = $bytes . ' bytes';
+    }
+    elseif ($bytes == 1)
+    {
+        $bytes = $bytes . ' byte';
+    }
+    else
+    {
+        $bytes = '0 bytes';
+    }*/
+
+    return $bytes;
+}
+
+function tobb_sort_visszaado_lekerdezes($connection, $query) {
+
+    if ($result = mysqli_query($connection, $query)) {
+        $record =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+        return $record;
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }   
+}
+
+function dokumentum_ertekeles($connection, $message, $valid)
+{
+    
+    $query = "SELECT id FROM dokumentumok  WHERE id = ?";
+    if ($statment = mysqli_prepare($connection, $query)) {
+        mysqli_stmt_bind_param($statment, "i", $_POST['dokumentum_id']); //bind-hozzákötés"s"-string
+        mysqli_stmt_execute($statment);
+        $result = mysqli_stmt_get_result($statment);
+        $record = mysqli_fetch_assoc($result);
+        if ($record != null) {
+
+            $insert = mysqli_query($connection,"INSERT INTO ertekelesek (
+                Dokumentumok_id,
+                Felhasznalok_id,
+                pont,
+                megjegyzes)
+            VALUES (
+                '{$_POST['dokumentum_id']}',
+                '{$_SESSION["id"]}',
+                '{$_POST['pont']}', 
+                '{$_POST["szoveg"]}')"); 
+
+            if ($insert) {
+
+                $valid = true;
+                $message = "A dokumentum értékelése sikeresen megörtént.";
+            
+            }
+
+
+        }
+        else {
+           $valid = false;
+           $message = 'A dokumentum értékelése sikertelen, mert a dokumentum, törlésre került.';
+           
+        }
+
+        return
+        json_encode(
+            //és itt volt a probléma
+            array(
+                'valid' => $valid, 
+                'message' => $message
+            )
+        );
+    } else {
+        logMessage("ERROR", 'Query error: ' . mysqli_error($connection));
+        errorPage();
+    }
+}
 
 
 

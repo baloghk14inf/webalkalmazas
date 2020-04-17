@@ -24,7 +24,7 @@
 
     $routes = [];
     // utvonalak felvétele a $routes tömbbe
-    //$routes['GET']['/'] = 'homeController'; //ez miatt hibába ötközött a betöltés mert alapértelmezetten a localhost = /
+    //$routes['GET']['/'] = 'homeController'; //ez miatt hibába ütközött a betöltés mert alapértelmezetten a localhost = /
     $routes['GET']['/login'] = 'loginFormController'; //Itt ez még csak az hogy irányítson a login formra
     $routes['GET']['/registration'] = 'registrationFormController'; //Ez a login formra fog irányítani
     $routes['GET']['/feltolteseim'] = 'feltolteseimController'; //Ez a login formra fog irányítani
@@ -34,9 +34,14 @@
     //$routes['GET']['/feltolteseim/(?<id>[\d]+)'] = 'registrationController';
 
     $routes['GET']['/logout'] = 'logoutController';
+    //$routes['GET']['/dokumentum'] = 'dokumentumController';
+    $routes['GET']['/dokumentum/(?<id>[\d]+)'] = 'dokumentumController';
+    $routes['GET']['/feltolteseim/kivalasztott-keres-(?<id>[\d]+)'] = 'feltolteseimController';
     
+    $routes['GET']['/dokumentum-kereses\/'] = 'dokumentum_keresesController'; //ki kellett escape-elni a speciális karaktert
+    $routes['GET']['/feltoltesek'] = 'feltoltesekController'; //ki kellett escape-elni a speciális karaktert
     //$routes['GET']['/login'] = 'loginFormController'; //ez pedig az hogy ha csak simán a bejelentkezés formra szeretnénk menni
-    //$routes['POST']['/login'] = 'loginSubmitController'; // ez figja majd meghatározni a miros figyelmeztetést (tehát ha hiba lenne)
+    //$routes['POST']['/login'] = 'loginSubmitController'; // ez fogja majd meghatározni a miros figyelmeztetést (tehát ha hiba lenne)
     //$routes['GET']['/logout'] = 'logoutSubmitController'; //about route létrehozása , már előre létre volt hozva
     
         /**

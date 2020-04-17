@@ -9,7 +9,7 @@
             <form class="form-container" method="get" action=''  role="form" id='lista'> 
                     <div class="form-group col-sm-12 col-lg-3 feltolteseim-frm" >
                         <label for="targy">Tárgy</label>
-                        <select class="form-control input-sm" name="targy" id="targy">
+                        <select class="form-control input-sm" name="targy" id="aktiv_k_targy">
                         <option value="">-- Kiválaszt --</option>
 
                         <?php
@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group col-sm-12 col-lg-3 feltolteseim-frm" >
                         <label for="kategoria">Kategória</label>
-                        <select class="form-control input-sm" name="kategoria" id="kategoria">
+                        <select class="form-control input-sm" name="kategoria" id="aktiv_k_kategoria">
                         <option value="">-- Kiválaszt --</option>
 
                         <?php

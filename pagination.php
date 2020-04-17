@@ -12,6 +12,7 @@ $valid = false;
 $listazando ="";
 $id = $_SESSION['id'];
 $tomb = array();
+$dokumentum_kereses = explode('=',urldecode($_POST['listazando']));
 
 
 if (isset($_POST['listazando'],$_POST['oldal'])) {
@@ -68,6 +69,45 @@ if ($listazando == "ellenorzesre_varakozo" || $listazando == "teljesitesre_varak
                         LIMIT ?, ?"; // itt is az ellenorzott
 }
 
+
+
+if (intval($listazando)) { //ha a listázandó szám (dokumentum esetében)
+
+
+    $query_total = "SELECT count(*) AS count FROM ertekelesek e WHERE e.Dokumentumok_id = '{$listazando}'"  ; //FONTOS it csak az ellenorzot dokumentumok legyenek
+    $query_content = "SELECT e.id hozzasz_id, f.felhasznalonev ertekelo, e.pont pont, e.megjegyzes megjegyzes, e.ertekeles_datuma ertekeles_datuma 
+                      FROM ertekelesek e INNER JOIN felhasznalok f ON f.id = e.Felhasznalok_id 
+                      WHERE e.Dokumentumok_id = '{$listazando}' ORDER BY e.ertekeles_datuma DESC
+                      LIMIT ?, ?"; // itt is az ellenorzott
+}
+
+if ($dokumentum_kereses[0] == "?keresendo") { //ha a listázandó szám (dokumentum esetében)
+
+    $keresendo = !empty($dokumentum_kereses[1]) ? "AND binary d.dokumentum_cime  LIKE " ."'%" . $dokumentum_kereses[1]. "%'"  : '';
+    $tantargy = !empty($_POST['targy']) ? 'AND d.Targyak_id = ' .'"' . $_POST['targy']. '"'  : '';
+    $kategoria = !empty($_POST['kategoria']) ? ' AND d.Kategoriak_id = ' .'"' . $_POST['kategoria']. '"' : '';
+    $ev = !empty($_POST['ev']) ? ' AND d.dokumentum_eve = ' .'"' . $_POST['ev']. '"' : '';
+
+    $query_total = "SELECT count(*) AS count FROM dokumentumok d WHERE d.Statuszok_id = 5 ".$keresendo. $tantargy. $kategoria. $ev ; //FONTOS it csak az ellenorzot dokumentumok legyenek
+    $query_content = "SELECT d.id id, t.nev targy, k.nev kategoria, d.dokumentum_cime dokumentum_cime, d.feltoltes_datuma feltoltes_datuma  FROM dokumentumok d 
+                     INNER JOIN targyak t ON d.Targyak_id = t.id INNER JOIN kategoriak k ON d.Kategoriak_id = k.id
+                     WHERE d.Statuszok_id = 5 ".$keresendo. $tantargy. $kategoria. $ev." ORDER BY d.feltoltes_datuma DESC
+                     LIMIT ?, ?"; // itt is az ellenorzott
+}
+
+if ($listazando == "feltoltesek") {
+
+    $query_total = "SELECT count(*) AS count FROM dokumentumok d WHERE d.Felhasznalok_id != '{$id}' AND d.Statuszok_id = 1 "  ; //FONTOS it csak az ellenorzot dokumentumok legyenek
+    $query_content = "SELECT d.id id, t.nev targy, k.nev kategoria, d.dokumentum_cime dokumentum_cime, d.feltoltes_datuma feltoltes_datuma FROM dokumentumok d 
+                     INNER JOIN targyak t ON d.Targyak_id = t.id INNER JOIN kategoriak k ON d.Kategoriak_id = k.id
+                     WHERE d.Felhasznalok_id != '{$id}' AND d.Statuszok_id = 1 ORDER BY d.feltoltes_datuma DESC
+                     LIMIT ?, ?"; // itt is az ellenorzott
+}
+
+//echo $query_content . "<br>";
+//echo $query_total . "<br>";
+
+//var_dump($_POST);
 
 
 

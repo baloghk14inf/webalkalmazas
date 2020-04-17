@@ -12,11 +12,11 @@
     </div>
     <!-- Ezt itt majd dinamikusan kell feltölteni -->
     <div class="collapse navbar-collapse navbar-right" id="menu">
-    <form class="navbar-form navbar-left" role="search">
+    <form class="navbar-form navbar-left" action="/dokumentum-kereses/" role="search">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Irja be a keresendőt">
+          <input type="text" class="form-control" name="keresendo" placeholder="Irja be a keresendőt" value="<?=!empty(isset($_GET['keresendo'])) ? $_GET['keresendo'] : '' ?>">
         </div>
-        <button type="submit" class="btn btn-default">Keresés</button>
+        <button type="submit" class="btn" id="kereses-gomb">Keresés</button>
       </form>
       <ul class="nav navbar-nav ">
           <?php
